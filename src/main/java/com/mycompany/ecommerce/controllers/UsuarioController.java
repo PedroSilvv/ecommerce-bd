@@ -40,7 +40,7 @@ public class UsuarioController {
 
         try{
             usuarioService.createUser(
-                    usuario.getDoc(), usuario.getNome(), usuario.getRole()
+                    usuario.getDoc(), usuario.getNome(), usuario.getSingleRole(), usuario.getPassword()
             );
 
             return ResponseEntity.ok("Criado com sucesso");

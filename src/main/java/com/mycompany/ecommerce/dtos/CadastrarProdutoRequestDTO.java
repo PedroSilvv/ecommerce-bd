@@ -1,50 +1,33 @@
-package com.mycompany.ecommerce.models;
+package com.mycompany.ecommerce.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.mycompany.ecommerce.models.Categoria;
+import jakarta.persistence.Column;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
-import jakarta.persistence.*;
-
-import java.io.Serial;
-import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.HashSet;
 import java.util.Set;
 
-@Entity
-@Table(name = "produto")
-public class Produto implements Serializable {
+public class CadastrarProdutoRequestDTO {
 
-    @Serial
-    private static final long serialVersionUID= 1L;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
-
-    @ManyToOne
-    @JoinColumn(name = "categoria_id", nullable = false)
+    @JsonProperty
     private Categoria categoria;
 
-    @Column(name = "nome", nullable = false, length = 100)
+    @JsonProperty
     private String nome;
 
-    @Column(name = "descricao", length = 500)
+    @JsonProperty
     private String descricao;
 
-    @Column(name = "quantidade", nullable = false)
+    @JsonProperty
     private Integer quantidade;
 
-    @Column(name = "preco", nullable = false)
+    @JsonProperty
     private BigDecimal preco;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @JsonProperty
+    private Set<String> subcategorias;
 
     public Categoria getCategoria() {
         return categoria;
@@ -86,5 +69,11 @@ public class Produto implements Serializable {
         this.preco = preco;
     }
 
+    public Set<String> getSubcategorias() {
+        return subcategorias;
+    }
 
+    public void setSubcategorias(Set<String> subcategorias) {
+        this.subcategorias = subcategorias;
+    }
 }

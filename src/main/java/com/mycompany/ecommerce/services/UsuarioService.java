@@ -19,10 +19,10 @@ public class UsuarioService {
         return usuarioRepository.findAll();
     }
 
-    public void createUser(String doc, String nome, Usuario.Role role) throws Exception {
+    public void createUser(String doc, String nome, Usuario.Role role, String password) throws Exception {
 
         usuarioRepository.createUser(
-                doc, nome, role.toString()
+                doc, nome, role.toString(), password
         );
 
     }

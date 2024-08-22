@@ -19,8 +19,9 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
     @Query(value = "SELECT * FROM produto ORDER BY id DESC", nativeQuery = true)
     List<Produto> findAll();
 
+
     @Query(value = "SELECT * FROM produto WHERE id = (:id)", nativeQuery = true)
-    Produto findByDoc(@Param("id") Long id);
+    Produto findByIdProduto(@Param("id") Long id);
 
     @Modifying
     @Transactional
@@ -36,4 +37,7 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 
     @Query(value = "SELECT * FROM produto WHERE categoria_id = (:categoria_id)", nativeQuery = true)
     List<Produto> findByCategoria(@Param("categoria_id") Long categoria);
+
+    @Query(value = "SELECT LAST_INSERT_ID()", nativeQuery = true)
+    Long findLastInsertId();
 }

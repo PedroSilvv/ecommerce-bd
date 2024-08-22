@@ -21,11 +21,13 @@ public interface UsuarioRepository extends JpaRepository<Usuario, String> {
 
     @Modifying
     @Transactional
-    @Query(value = "INSERT INTO usuario VALUES (:doc, :nome, :user_role)", nativeQuery = true)
+    @Query(value = "INSERT INTO usuario VALUES (:doc, :nome, :user_role, :password)", nativeQuery = true)
     void createUser(
             @Param("doc") String doc,
             @Param("nome") String nome,
-            @Param("user_role") String role
+            @Param("user_role") String role,
+            @Param("password") String password
+
     );
 
 }

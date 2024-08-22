@@ -44,7 +44,7 @@ public class CompraController {
 
             Long idCompra = compraRepository.findLastInsertId();
 
-            BigDecimal precoTotalCompra = BigDecimal.ZERO;
+            Double produtoTotalPreco = 0.0;
 
             for ( ProdutoRequestDTO produto : requestDTO.getProdutos() ) {
 
@@ -52,18 +52,17 @@ public class CompraController {
                 compraProduto.setCompra(novaCompra);
                 compraProduto.setProduto(produto.getProduto());
                 compraProduto.setQuantidadeItem(produto.getQuantidadeComprada());
-                //compraProdutoRepository.save(compraProduto);
+
                 compraProdutoRepository.createCompraProduto(idCompra,
                         compraProduto.getProduto().getId(), compraProduto.getQuantidadeItem());
 
                 novaCompra.getCompraProdutos().add(compraProduto);
-                precoTotalCompra.add(produto.getPrecoTotal());
-                System.out.println(produto.getPrecoTotal());
+                produtoTotalPreco += produto.getProduto().getPreco().doubleValue() * produto.getQuantidadeComprada();
             }
-            System.out.println(precoTotalCompra);
-            novaCompra.setPrecoTotal(precoTotalCompra);
-            //compraRepository.updatePrecoTotal(BigDecimal.valueOf(500.00), novaCompra.getId());
-            compraRepository.save(novaCompra);
+
+
+            novaCompra.setPrecoTotal(new BigDecimal(produtoTotalPreco));
+            compraRepository.updatePrecoTotal(novaCompra.getPrecoTotal(), idCompra);
 
             return ResponseEntity.ok().body(novaCompra);
         }
