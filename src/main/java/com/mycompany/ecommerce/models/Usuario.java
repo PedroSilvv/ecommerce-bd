@@ -1,6 +1,7 @@
 package com.mycompany.ecommerce.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
@@ -21,6 +22,10 @@ public class Usuario implements Serializable {
     @JsonProperty
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @Column(name = "password", nullable = false, length = 250)
+    @JsonIgnore
+    private String password;
 
 
     public String getDoc() {
@@ -47,8 +52,18 @@ public class Usuario implements Serializable {
         this.role = role;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public enum Role{
         ADMIN, DEFAULT
     }
+
+
 
 }

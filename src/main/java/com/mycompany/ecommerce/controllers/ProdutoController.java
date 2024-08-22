@@ -18,7 +18,7 @@ public class ProdutoController {
     ProdutoService produtoService;
 
     @PostMapping("/cadastrar-produto")
-    public ResponseEntity<?> criarUsuario(@RequestBody Produto produto){
+    public ResponseEntity<?> cadastrarProduto(@RequestBody Produto produto){
 
         try{
             produtoService.createProduto(
@@ -35,7 +35,7 @@ public class ProdutoController {
     }
 
     @GetMapping("/produtos/categoria/{id}")
-    public ResponseEntity<?> getProdutoByCategoria(@PathVariable(value = "id") Long id){
+    public ResponseEntity<?> buscarProdutoPorCategoria(@PathVariable(value = "id") Long id){
         try{
             List<Produto> produtos = produtoService.findProdutoByCategoria(id);
 

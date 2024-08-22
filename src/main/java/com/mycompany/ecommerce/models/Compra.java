@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -25,13 +26,14 @@ public class Compra implements Serializable {
     private Usuario usuario;
 
     @Column(name = "status_compra", nullable = false)
+    @Enumerated(EnumType.STRING)
     private Status status;
 
     @Column(name = "preco_total", nullable = false)
     private BigDecimal precoTotal;
 
     @OneToMany(mappedBy = "compra", cascade = CascadeType.ALL)
-    private Set<CompraProduto> compraProdutos;
+    private Set<CompraProduto> compraProdutos = new HashSet<>();
 
     public Set<CompraProduto> getCompraProdutos() {
         return compraProdutos;

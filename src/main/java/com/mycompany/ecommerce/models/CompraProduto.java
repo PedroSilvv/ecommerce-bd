@@ -1,5 +1,6 @@
 package com.mycompany.ecommerce.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serial;
@@ -12,11 +13,13 @@ public class CompraProduto implements Serializable {
     @Serial
     private static final long serialVersionUID= 1L;
 
+    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "compra_id", nullable = false)
     private Compra compra;

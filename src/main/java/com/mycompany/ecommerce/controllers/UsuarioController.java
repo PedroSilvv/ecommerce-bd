@@ -22,7 +22,7 @@ public class UsuarioController {
     }
 
     @GetMapping("/usuario/doc/{doc}")
-    public ResponseEntity<?> usuarioByDoc(@PathVariable(value = "doc") String doc){
+    public ResponseEntity<?> buscarUsuarioPorDoc(@PathVariable(value = "doc") String doc){
         try{
             Usuario usuario = usuarioService.findUserByDoc(doc);
 
