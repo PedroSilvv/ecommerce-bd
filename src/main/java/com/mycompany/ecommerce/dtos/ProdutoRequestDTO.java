@@ -12,6 +12,8 @@ public class ProdutoRequestDTO {
     @JsonProperty
     private Produto produto;
 
+
+
     @JsonProperty
     private Integer quantidadeComprada;
 

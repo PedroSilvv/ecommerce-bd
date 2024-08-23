@@ -1,6 +1,7 @@
 package com.mycompany.ecommerce.controllers;
 
 import com.mycompany.ecommerce.dtos.CadastrarProdutoRequestDTO;
+import com.mycompany.ecommerce.dtos.FiltrarProdutoResponseDTO;
 import com.mycompany.ecommerce.dtos.ProdutoRequestDTO;
 import com.mycompany.ecommerce.models.Produto;
 import com.mycompany.ecommerce.models.Subcategoria;
@@ -9,12 +10,15 @@ import com.mycompany.ecommerce.models.Usuario;
 import com.mycompany.ecommerce.repositories.ProdutoRepository;
 import com.mycompany.ecommerce.repositories.SubcategoriaProdutoRepository;
 import com.mycompany.ecommerce.repositories.SubcategoriaRepository;
+import com.mycompany.ecommerce.repositories.custom.CustomProdutoRepository;
 import com.mycompany.ecommerce.services.ProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.logging.Filter;
 
 @RestController
 @RequestMapping(value = "/api")
@@ -31,6 +35,9 @@ public class ProdutoController {
 
     @Autowired
     SubcategoriaProdutoRepository subcategoriaProdutoRepository;
+
+    @Autowired
+    CustomProdutoRepository customProdutoRepository;
 
     @PostMapping("/cadastrar-produto")
     public ResponseEntity<?> cadastrarProduto(@RequestBody CadastrarProdutoRequestDTO produto){
@@ -58,6 +65,20 @@ public class ProdutoController {
         }
 
     }
+
+    @GetMapping("/filtrar-produtos")
+    public ResponseEntity<List<FiltrarProdutoResponseDTO>> filtrarProdutos(
+            @RequestParam(required = false) String nome,
+            @RequestParam(required = false) String categoria,
+            @RequestParam(required = false) BigDecimal precoMinimo,
+            @RequestParam(required = false) BigDecimal precoMaximo,
+            @RequestParam(required = false) String descricao) {
+
+        List<FiltrarProdutoResponseDTO> produtos = customProdutoRepository.filtrarProdutos(nome, categoria, precoMinimo, precoMaximo, descricao);
+        return ResponseEntity.ok(produtos);
+    }
+
+
 
 
 }

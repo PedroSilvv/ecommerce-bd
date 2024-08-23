@@ -21,7 +21,6 @@ import java.math.BigDecimal;
 @RequestMapping(value = "/api")
 public class CompraController {
 
-
     @Autowired
     CompraRepository compraRepository;
 
@@ -59,6 +58,7 @@ public class CompraController {
                 novaCompra.getCompraProdutos().add(compraProduto);
                 produtoTotalPreco += produto.getProduto().getPreco().doubleValue() * produto.getQuantidadeComprada();
             }
+
 
 
             novaCompra.setPrecoTotal(new BigDecimal(produtoTotalPreco));
