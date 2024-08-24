@@ -1,5 +1,6 @@
 package com.mycompany.ecommerce.repositories;
 
+import com.mycompany.ecommerce.models.Produto;
 import com.mycompany.ecommerce.models.SubcategoriaProduto;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public interface SubcategoriaProdutoRepository extends JpaRepository<SubcategoriaProduto, Long> {
 
@@ -20,5 +22,7 @@ public interface SubcategoriaProdutoRepository extends JpaRepository<Subcategori
             @Param("subcategoria_id") Long subcategoria,
             @Param("produto_id") Long produto
     );
+
+    List<SubcategoriaProduto> findByProduto(Produto produto);
 
 }

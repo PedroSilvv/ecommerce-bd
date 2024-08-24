@@ -40,4 +40,9 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
 
     @Query(value = "SELECT LAST_INSERT_ID()", nativeQuery = true)
     Long findLastInsertId();
+
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE produto SET quantidade = (:novo_valor) WHERE id = (:id)", nativeQuery = true)
+    void updateQuantidade(@Param("novo_valor") Integer novoValor, @Param("id") Long id);
 }
