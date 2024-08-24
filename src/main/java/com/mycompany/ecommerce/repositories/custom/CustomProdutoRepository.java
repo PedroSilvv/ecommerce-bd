@@ -2,10 +2,14 @@ package com.mycompany.ecommerce.repositories.custom;
 
 import com.mycompany.ecommerce.dtos.FiltrarProdutoResponseDTO;
 import com.mycompany.ecommerce.models.Produto;
+import com.mycompany.ecommerce.models.SubcategoriaProduto;
+import com.mycompany.ecommerce.repositories.ProdutoRepository;
+import com.mycompany.ecommerce.repositories.SubcategoriaProdutoRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -18,8 +22,14 @@ public class CustomProdutoRepository {
     @PersistenceContext
     private EntityManager entityManager;
 
+    @Autowired
+    ProdutoRepository produtoRepository;
+
+    @Autowired
+    SubcategoriaProdutoRepository subcategoriaProdutoRepository;
+
     public List<FiltrarProdutoResponseDTO> filtrarProdutos(String nome, String categoria, BigDecimal precoMinimo, BigDecimal precoMaximo, String descricao) {
-        StringBuilder queryBuilder = new StringBuilder("SELECT p.nome, p.preco, p.quantidade, c.nome, p.descricao " +
+        StringBuilder queryBuilder = new StringBuilder("SELECT p.nome, p.preco, p.quantidade, c.nome, p.descricao, p.id " +
                 " FROM produto p JOIN categoria c ON p.categoria_id = c.id " +
                 "WHERE 1=1 ");
 
@@ -40,8 +50,6 @@ public class CustomProdutoRepository {
         }
 
         Query query = entityManager.createNativeQuery(queryBuilder.toString());
-
-
 
         // Define os parâmetros da query
         if (nome != null && !nome.isEmpty()) {
@@ -69,8 +77,17 @@ public class CustomProdutoRepository {
             Integer quantidadeProduto = (Integer) o[2];
             String categoriaProduto = (String) o[3];
             String descricaoProduto = (String) o[4];
+            Integer idProduto = (Integer) o[5];
 
-            dtos.add(new FiltrarProdutoResponseDTO(nomeProduto, precoProduto, quantidadeProduto, categoriaProduto, descricaoProduto));
+            Produto produto = produtoRepository.findByIdProduto(idProduto.longValue());
+            List<SubcategoriaProduto> subcategorias = subcategoriaProdutoRepository.findByProduto(produto);
+
+            List<String> subcategoriasNome = new ArrayList<>();
+            for (SubcategoriaProduto s: subcategorias) {
+                subcategoriasNome.add(s.getSubcategoria().getNome());
+            }
+
+            dtos.add(new FiltrarProdutoResponseDTO(nomeProduto, precoProduto, quantidadeProduto, categoriaProduto, descricaoProduto, subcategoriasNome));
         }
 
         return dtos;

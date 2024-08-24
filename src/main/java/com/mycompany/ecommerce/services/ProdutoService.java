@@ -1,6 +1,7 @@
 package com.mycompany.ecommerce.services;
 
 import com.mycompany.ecommerce.dtos.CadastrarProdutoRequestDTO;
+import com.mycompany.ecommerce.dtos.FiltrarProdutoResponseDTO;
 import com.mycompany.ecommerce.models.Categoria;
 import com.mycompany.ecommerce.models.Produto;
 import com.mycompany.ecommerce.models.Subcategoria;
@@ -9,6 +10,7 @@ import com.mycompany.ecommerce.repositories.CategoriaRepository;
 import com.mycompany.ecommerce.repositories.ProdutoRepository;
 import com.mycompany.ecommerce.repositories.SubcategoriaProdutoRepository;
 import com.mycompany.ecommerce.repositories.SubcategoriaRepository;
+import com.mycompany.ecommerce.repositories.custom.CustomProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,9 @@ public class ProdutoService {
 
     @Autowired
     SubcategoriaProdutoRepository subcategoriaProdutoRepository;
+
+    @Autowired
+    CustomProdutoRepository customProdutoRepository;
 
     public void createProduto(Categoria categoria, String nome, String descricao, Integer quantidade, BigDecimal preco) {
         produtoRepository.createProduto(categoria.getId(), nome, descricao, quantidade, preco);
@@ -88,4 +93,24 @@ public class ProdutoService {
         }
     }
 
+    public List<FiltrarProdutoResponseDTO> filtrarProdutos(String nome, String categoria, BigDecimal precoMinimo, BigDecimal precoMaximo, String descricao) throws Exception {
+
+        try{
+            List<FiltrarProdutoResponseDTO> produtos = customProdutoRepository.filtrarProdutos(
+                    nome, categoria, precoMinimo, precoMaximo, descricao);
+
+            return produtos;
+        }
+        catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+
+    }
+
+    public void atualizarQuantidadeProduto(Integer novoValor, Long id){
+        produtoRepository.updateQuantidade(novoValor, id);
+    }
+
 }
+
+

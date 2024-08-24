@@ -1,6 +1,7 @@
 package com.mycompany.ecommerce.dtos;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class FiltrarProdutoResponseDTO {
 
@@ -9,13 +10,16 @@ public class FiltrarProdutoResponseDTO {
     private Integer quantidade;
     private String categoriaNome;
     private String descricaoProduto;
+    private List<String> subcategorias;
 
-    public FiltrarProdutoResponseDTO(String nome, BigDecimal preco, Integer quantidade, String categoriaNome, String descricaoProduto) {
+    public FiltrarProdutoResponseDTO(String nome, BigDecimal preco, Integer quantidade, String categoriaNome, String descricaoProduto, List<String> subcategorias) {
         this.nome = nome;
         this.preco = preco;
         this.quantidade = quantidade;
         this.categoriaNome = categoriaNome;
         this.descricaoProduto = descricaoProduto;
+        this.subcategorias = subcategorias;
+
     }
 
     public String getNome() {
@@ -56,5 +60,13 @@ public class FiltrarProdutoResponseDTO {
 
     public void setDescricaoProduto(String descricaoProduto) {
         this.descricaoProduto = descricaoProduto;
+    }
+
+    public List<String> getSubcategorias() {
+        return subcategorias;
+    }
+
+    public void setSubcategorias(List<String> subcategorias) {
+        this.subcategorias = subcategorias;
     }
 }

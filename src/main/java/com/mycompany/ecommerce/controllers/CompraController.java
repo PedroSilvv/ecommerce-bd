@@ -7,6 +7,7 @@ import com.mycompany.ecommerce.models.CompraProduto;
 import com.mycompany.ecommerce.models.Produto;
 import com.mycompany.ecommerce.repositories.CompraProdutoRepository;
 import com.mycompany.ecommerce.repositories.CompraRepository;
+import com.mycompany.ecommerce.services.ProdutoService;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +28,8 @@ public class CompraController {
     @Autowired
     CompraProdutoRepository compraProdutoRepository;
 
-
+    @Autowired
+    ProdutoService produtoService;
 
     @PostMapping("/compra/efetuar-compra")
     public ResponseEntity<?> efetuarComprar(@RequestBody EfetuarCompraRequestDTO requestDTO){
@@ -47,6 +49,10 @@ public class CompraController {
 
             for ( ProdutoRequestDTO produto : requestDTO.getProdutos() ) {
 
+                if(produto.getQuantidadeComprada() > produto.getProduto().getQuantidade()){
+                    return ResponseEntity.badRequest().body("Quantidade não disponivel em estoque");
+                }
+
                 CompraProduto compraProduto = new CompraProduto();
                 compraProduto.setCompra(novaCompra);
                 compraProduto.setProduto(produto.getProduto());
@@ -57,6 +63,9 @@ public class CompraController {
 
                 novaCompra.getCompraProdutos().add(compraProduto);
                 produtoTotalPreco += produto.getProduto().getPreco().doubleValue() * produto.getQuantidadeComprada();
+
+                Integer novaQuantidade = produto.getProduto().getQuantidade() - produto.getQuantidadeComprada();
+                produtoService.atualizarQuantidadeProduto(novaQuantidade, produto.getProduto().getId());
             }
 
 

@@ -36,8 +36,6 @@ public class ProdutoController {
     @Autowired
     SubcategoriaProdutoRepository subcategoriaProdutoRepository;
 
-    @Autowired
-    CustomProdutoRepository customProdutoRepository;
 
     @PostMapping("/cadastrar-produto")
     public ResponseEntity<?> cadastrarProduto(@RequestBody CadastrarProdutoRequestDTO produto){
@@ -72,9 +70,9 @@ public class ProdutoController {
             @RequestParam(required = false) String categoria,
             @RequestParam(required = false) BigDecimal precoMinimo,
             @RequestParam(required = false) BigDecimal precoMaximo,
-            @RequestParam(required = false) String descricao) {
+            @RequestParam(required = false) String descricao) throws Exception {
 
-        List<FiltrarProdutoResponseDTO> produtos = customProdutoRepository.filtrarProdutos(nome, categoria, precoMinimo, precoMaximo, descricao);
+        List<FiltrarProdutoResponseDTO> produtos = produtoService.filtrarProdutos(nome, categoria, precoMinimo, precoMaximo, descricao);
         return ResponseEntity.ok(produtos);
     }
 
