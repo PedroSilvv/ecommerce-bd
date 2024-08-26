@@ -36,6 +36,9 @@ public class ProdutoController {
     @Autowired
     SubcategoriaProdutoRepository subcategoriaProdutoRepository;
 
+    @Autowired
+    CustomProdutoRepository customProdutoRepository;
+
 
     @PostMapping("/cadastrar-produto")
     public ResponseEntity<?> cadastrarProduto(@RequestBody CadastrarProdutoRequestDTO produto){
@@ -44,7 +47,7 @@ public class ProdutoController {
 
             Produto novoProduto = produtoService.cadastrarNovoProduto(produto);
 
-            return ResponseEntity.ok(produto);
+            return ResponseEntity.ok(novoProduto);
 
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -76,7 +79,31 @@ public class ProdutoController {
         return ResponseEntity.ok(produtos);
     }
 
+    @PostMapping("/atualizar-produto/{id}")
+    public ResponseEntity<?> atualizarProduto(@PathVariable(value = "id") Long id,
+                                                    @RequestBody Produto requestDTO){
 
+
+        try{
+            Produto produto = produtoRepository.findByIdProduto(id);
+
+            produtoService.atualizarProduto(
+                    produto.getId(),
+                    requestDTO
+            );
+
+            return ResponseEntity.ok().body(produto);
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/buscar-produto-por-termo/{termo}")
+    public List<FiltrarProdutoResponseDTO> buscarProdutoPorTermo(@PathVariable(value = "termo") String termo){
+
+        return customProdutoRepository.buscarPorTermo(termo);
+    }
 
 
 }

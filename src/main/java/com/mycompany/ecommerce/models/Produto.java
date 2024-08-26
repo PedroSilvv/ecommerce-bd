@@ -1,6 +1,7 @@
 package com.mycompany.ecommerce.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serial;
@@ -21,7 +22,6 @@ public class Produto implements Serializable {
     @Column(name = "id")
     private Long id;
 
-
     @ManyToOne
     @JoinColumn(name = "categoria_id", nullable = false)
     private Categoria categoria;
@@ -37,6 +37,10 @@ public class Produto implements Serializable {
 
     @Column(name = "preco", nullable = false)
     private BigDecimal preco;
+
+    @JsonIgnore
+    @Column(name = "quantidade_vendas")
+    private Integer quantidadeVendas = 0;
 
     public Long getId() {
         return id;
@@ -86,5 +90,15 @@ public class Produto implements Serializable {
         this.preco = preco;
     }
 
+    public Integer getQuantidadeVendas() {
+        return quantidadeVendas;
+    }
 
+    public void setQuantidadeVendas(Integer quantidadeVendas) {
+        this.quantidadeVendas = quantidadeVendas;
+    }
+
+    public void setNovaQuantidadeDeVendas(Integer quantidade){
+        this.quantidadeVendas = this.quantidadeVendas + quantidade;
+    }
 }

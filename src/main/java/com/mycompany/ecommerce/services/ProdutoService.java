@@ -111,6 +111,45 @@ public class ProdutoService {
         produtoRepository.updateQuantidade(novoValor, id);
     }
 
+    public void atualizarProduto(Long id, Produto novoProduto) throws Exception {
+
+        try{
+            Produto produto = produtoRepository.findByIdProduto(id);
+
+//            produto.setNome(novoProduto.getNome());
+//            produto.setCategoria(novoProduto.getCategoria());
+//            produto.setQuantidade(novoProduto.getQuantidade());
+//            produto.setPreco(novoProduto.getPreco());
+//            produto.setDescricao(novoProduto.getDescricao());
+
+            produtoRepository.updateProduto(
+                    novoProduto.getNome(),
+                    novoProduto.getDescricao(),
+                    novoProduto.getQuantidade(),
+                    novoProduto.getPreco(),
+                    novoProduto.getCategoria().getId(),
+                    produto.getId()
+                    );
+
+        }catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    public void atualizarQuantidadVendas(Integer novaQuantidade, Long id) throws Exception {
+
+        try{
+
+            produtoRepository.updateQuantidadeDeVendas(novaQuantidade, id);
+
+        }catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+
+    }
+
+
+
 }
 
 

@@ -7,6 +7,7 @@ import com.mycompany.ecommerce.models.CompraProduto;
 import com.mycompany.ecommerce.models.Produto;
 import com.mycompany.ecommerce.repositories.CompraProdutoRepository;
 import com.mycompany.ecommerce.repositories.CompraRepository;
+import com.mycompany.ecommerce.repositories.ProdutoRepository;
 import com.mycompany.ecommerce.services.ProdutoService;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,9 @@ public class CompraController {
 
     @Autowired
     ProdutoService produtoService;
+
+    @Autowired
+    ProdutoRepository produtoRepository;
 
     @PostMapping("/compra/efetuar-compra")
     public ResponseEntity<?> efetuarComprar(@RequestBody EfetuarCompraRequestDTO requestDTO){
@@ -64,8 +68,15 @@ public class CompraController {
                 novaCompra.getCompraProdutos().add(compraProduto);
                 produtoTotalPreco += produto.getProduto().getPreco().doubleValue() * produto.getQuantidadeComprada();
 
-                Integer novaQuantidade = produto.getProduto().getQuantidade() - produto.getQuantidadeComprada();
-                produtoService.atualizarQuantidadeProduto(novaQuantidade, produto.getProduto().getId());
+//                Integer novaQuantidade = produto.getProduto().getQuantidade() - produto.getQuantidadeComprada();
+//                produtoService.atualizarQuantidadeProduto(novaQuantidade, produto.getProduto().getId());
+//
+//                Integer novaQuantidadeDeVendas = produto.getProduto().getQuantidadeVendas() + produto.getQuantidadeComprada();
+//                produtoService.atualizarQuantidadVendas(novaQuantidadeDeVendas, produto.getProduto().getId());
+
+                produto.getProduto().setQuantidade(produto.getProduto().getQuantidade() - produto.getQuantidadeComprada());
+                produto.getProduto().setNovaQuantidadeDeVendas(produto.getProduto().getQuantidadeVendas() + produto.getQuantidadeComprada());
+                produtoRepository.save(produto.getProduto());
             }
 
 

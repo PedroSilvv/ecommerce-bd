@@ -92,4 +92,46 @@ public class CustomProdutoRepository {
 
         return dtos;
     }
+
+    public List<FiltrarProdutoResponseDTO> buscarPorTermo(String termo){
+
+        StringBuilder queryBuilder = new StringBuilder("SELECT p.nome, p.preco, p.quantidade, c.nome, p.descricao, p.id \n" +
+                "FROM produto p\n" +
+                "JOIN categoria c ON p.categoria_id = c.id \n" +
+                "WHERE p.nome LIKE :termo \n" +
+                "OR p.descricao LIKE :termo \n" +
+                "OR p.marca LIKE :termo \n" +
+                "OR c.nome LIKE :termo");
+
+        Query query = entityManager.createNativeQuery(queryBuilder.toString());
+
+        if (termo != null && !termo.isEmpty()) {
+            query.setParameter("termo", "%" + termo + "%");
+        }
+
+        List<Object[]> resultadoLista = query.getResultList();
+        List<FiltrarProdutoResponseDTO> dtos = new ArrayList<>();
+
+        for (Object[] o : resultadoLista) {
+            String nomeProduto = (String) o[0];
+            BigDecimal precoProduto = (BigDecimal) o[1];
+            Integer quantidadeProduto = (Integer) o[2];
+            String categoriaProduto = (String) o[3];
+            String descricaoProduto = (String) o[4];
+            Integer idProduto = (Integer) o[5];
+
+            Produto produto = produtoRepository.findByIdProduto(idProduto.longValue());
+            List<SubcategoriaProduto> subcategorias = subcategoriaProdutoRepository.findByProduto(produto);
+
+            List<String> subcategoriasNome = new ArrayList<>();
+            for (SubcategoriaProduto s: subcategorias) {
+                subcategoriasNome.add(s.getSubcategoria().getNome());
+            }
+
+            dtos.add(new FiltrarProdutoResponseDTO(nomeProduto, precoProduto, quantidadeProduto, categoriaProduto, descricaoProduto, subcategoriasNome));
+        }
+
+        return dtos;
+
+    }
 }

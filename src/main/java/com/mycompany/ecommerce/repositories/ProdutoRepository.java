@@ -45,4 +45,31 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
     @Transactional
     @Query(value = "UPDATE produto SET quantidade = (:novo_valor) WHERE id = (:id)", nativeQuery = true)
     void updateQuantidade(@Param("novo_valor") Integer novoValor, @Param("id") Long id);
+
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE produto SET nome = (:nome), descricao = (:descricao), quantidade = (:quantidade), preco = (:preco), categoria_id = (:categoria_id) " +
+                   "WHERE id = (:id)", nativeQuery = true)
+    void updateProduto(
+            @Param("nome") String nome,
+            @Param("descricao") String descricao,
+            @Param("quantidade") Integer quantidade,
+            @Param("preco") BigDecimal preco,
+            @Param("categoria_id") Long categoriaId,
+            @Param("id") Long id
+    );
+
+
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE produto SET quantidade_vendas = (:quantidade_vendas) " +
+            "WHERE id = (:id)", nativeQuery = true)
+    void updateQuantidadeDeVendas(
+            @Param("quantidade_vendas") Integer novaQuantidade,
+            @Param("id") Long id
+    );
+
+
+
+
 }
