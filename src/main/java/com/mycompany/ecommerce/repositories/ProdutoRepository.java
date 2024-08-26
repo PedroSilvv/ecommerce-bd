@@ -70,6 +70,9 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
     );
 
 
+    @Query(value = "select * from produto order by quantidade_vendas desc", nativeQuery = true)
+    List<Produto> findMostSelled();
+
 
 
 }

@@ -131,5 +131,12 @@ alter table produto add column quantidade_vendas INTEGER DEFAULT 0;
 
 alter table compra add column data_compra DATE;
 
+select produto.nome from produto order by quantidade_vendas desc;
 
+SELECT p.id, p.nome, SUM(ci.quantidade_item) AS total_vendido
+FROM produto p
+JOIN compra_item ci ON p.id = ci.produto_id
+JOIN compra c ON ci.compra_id = c.id
+WHERE c.data_compra = '2024-08-26'
+GROUP BY p.id, p.nome
 
