@@ -44,9 +44,10 @@ create table compra_item(
 
 
 insert into usuario values(
-	'09629588919',
-    'Pedro Henrique de Souza',
-	'ADMIN'
+	'99999999999',
+    'Kaster',
+	'ADMIN',
+    'Kaster'
 );
 
 insert into categoria (nome) values('WHISKY');
@@ -113,5 +114,22 @@ FROM subcategoria sc
 JOIN subcategoria_produto sp ON sc.id = sp.subcategoria_id
 JOIN produto p ON p.id = sp.produto_id
 WHERE p.id = 6;
+
+alter table produto add column marca VARCHAR(50);
+
+
+SELECT *
+FROM produto p
+JOIN categoria c ON p.categoria_id = c.id
+WHERE p.nome LIKE '%termo%'
+OR p.descricao LIKE '%termo%'
+OR p.marca LIKE '%termo'
+OR c.nome LIKE '%termo%';
+
+
+alter table produto add column quantidade_vendas INTEGER DEFAULT 0;
+
+alter table compra add column data_compra DATE;
+
 
 

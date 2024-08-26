@@ -1,10 +1,12 @@
 package com.mycompany.ecommerce.models;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,6 +36,11 @@ public class Compra implements Serializable {
 
     @OneToMany(mappedBy = "compra", cascade = CascadeType.ALL)
     private Set<CompraProduto> compraProdutos = new HashSet<>();
+
+    @Column(name = "data_compra", nullable = false)
+    @CreationTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dataCompra;
 
     public Set<CompraProduto> getCompraProdutos() {
         return compraProdutos;
@@ -75,7 +82,17 @@ public class Compra implements Serializable {
         this.precoTotal = precoTotal;
     }
 
+    public Date getDataCompra() {
+        return dataCompra;
+    }
+
+    public void setDataCompra(Date dataCompra) {
+        this.dataCompra = dataCompra;
+    }
+
     public enum Status{
         PENDENTE, CANCELADA, CONCLUIDA
     }
+
+
 }

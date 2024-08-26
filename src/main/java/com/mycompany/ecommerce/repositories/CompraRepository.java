@@ -7,9 +7,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 @Repository
 public interface CompraRepository extends JpaRepository<Compra, Long> {
@@ -19,12 +21,13 @@ public interface CompraRepository extends JpaRepository<Compra, Long> {
 
     @Modifying
     @Transactional
-    @Query(value = "INSERT INTO compra (usuario_doc, status_compra, preco_total)" +
-            " VALUES (:usuario_doc, :status_compra, :preco_total)", nativeQuery = true)
+    @Query(value = "INSERT INTO compra (usuario_doc, status_compra, preco_total, data_compra)" +
+            " VALUES (:usuario_doc, :status_compra, :preco_total, :data_compra)", nativeQuery = true)
     void createCompra(
             @Param("usuario_doc") String usuarioDoc,
             @Param("status_compra") String statusCompra,
-            @Param("preco_total") BigDecimal precoTotal
+            @Param("preco_total") BigDecimal precoTotal,
+            @Param("data_compra") Date dataCompra
     );
 
     @Query(value = "SELECT LAST_INSERT_ID()", nativeQuery = true)

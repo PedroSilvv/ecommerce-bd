@@ -18,6 +18,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 
 @RestController
 @RequestMapping(value = "/api")
@@ -40,12 +44,15 @@ public class CompraController {
 
 
         try{
+            LocalDateTime localTime = LocalDateTime.now();
+            Date localDate = Date.from(localTime.atZone(ZoneId.systemDefault()).toInstant());
+
             Compra novaCompra = new Compra();
             novaCompra.setUsuario(requestDTO.getUsuario());
             novaCompra.setStatus(Compra.Status.PENDENTE);
             novaCompra.setPrecoTotal(BigDecimal.ZERO);
-            //compraRepository.save(novaCompra);
-            compraRepository.createCompra(novaCompra.getUsuario().getDoc(), novaCompra.getStatus().toString(), novaCompra.getPrecoTotal());
+            novaCompra.setDataCompra(localDate);
+            compraRepository.createCompra(novaCompra.getUsuario().getDoc(), novaCompra.getStatus().toString(), novaCompra.getPrecoTotal(), novaCompra.getDataCompra());
 
             Long idCompra = compraRepository.findLastInsertId();
 
@@ -53,30 +60,32 @@ public class CompraController {
 
             for ( ProdutoRequestDTO produto : requestDTO.getProdutos() ) {
 
-                if(produto.getQuantidadeComprada() > produto.getProduto().getQuantidade()){
+                Produto produtoComprado = produtoRepository.findByIdProduto(produto.getProduto_id());
+
+                if(produto.getQuantidadeComprada() > produtoComprado.getQuantidade()){
                     return ResponseEntity.badRequest().body("Quantidade não disponivel em estoque");
                 }
 
                 CompraProduto compraProduto = new CompraProduto();
                 compraProduto.setCompra(novaCompra);
-                compraProduto.setProduto(produto.getProduto());
+                compraProduto.setProduto(produtoComprado);
                 compraProduto.setQuantidadeItem(produto.getQuantidadeComprada());
 
                 compraProdutoRepository.createCompraProduto(idCompra,
                         compraProduto.getProduto().getId(), compraProduto.getQuantidadeItem());
 
                 novaCompra.getCompraProdutos().add(compraProduto);
-                produtoTotalPreco += produto.getProduto().getPreco().doubleValue() * produto.getQuantidadeComprada();
+                produtoTotalPreco += produtoComprado.getPreco().doubleValue() * produto.getQuantidadeComprada();
 
-//                Integer novaQuantidade = produto.getProduto().getQuantidade() - produto.getQuantidadeComprada();
-//                produtoService.atualizarQuantidadeProduto(novaQuantidade, produto.getProduto().getId());
-//
-//                Integer novaQuantidadeDeVendas = produto.getProduto().getQuantidadeVendas() + produto.getQuantidadeComprada();
-//                produtoService.atualizarQuantidadVendas(novaQuantidadeDeVendas, produto.getProduto().getId());
+                Integer novaQuantidade = produtoComprado.getQuantidade() - produto.getQuantidadeComprada();
+                produtoService.atualizarQuantidadeProduto(novaQuantidade, produtoComprado.getId());
 
-                produto.getProduto().setQuantidade(produto.getProduto().getQuantidade() - produto.getQuantidadeComprada());
-                produto.getProduto().setNovaQuantidadeDeVendas(produto.getProduto().getQuantidadeVendas() + produto.getQuantidadeComprada());
-                produtoRepository.save(produto.getProduto());
+                Integer novaQuantidadeDeVendas = produtoComprado.getQuantidadeVendas() + produto.getQuantidadeComprada();
+                produtoService.atualizarQuantidadVendas(novaQuantidadeDeVendas, produtoComprado.getId());
+
+//                produtoComprado.setQuantidade(produtoComprado.getQuantidade() - produto.getQuantidadeComprada());
+//                produtoComprado.setNovaQuantidadeDeVendas(produtoComprado.getQuantidadeVendas() + produto.getQuantidadeComprada());
+//                produtoRepository.save(produtoComprado);
             }
 
 

@@ -10,19 +10,23 @@ import java.math.RoundingMode;
 public class ProdutoRequestDTO {
 
     @JsonProperty
-    private Produto produto;
+    private Long produto_id;
 
     @JsonProperty
     private Integer quantidadeComprada;
 
     private BigDecimal precoTotal;
 
-    public Produto getProduto() {
-        return produto;
+    public Long getProduto_id() {
+        return produto_id;
     }
 
-    public void setProduto(Produto produto) {
-        this.produto = produto;
+    public void setProduto_id(Long produto_id) {
+        this.produto_id = produto_id;
+    }
+
+    public BigDecimal getPrecoTotal() {
+        return precoTotal;
     }
 
     public Integer getQuantidadeComprada() {
