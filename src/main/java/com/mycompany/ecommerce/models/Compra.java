@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "compra")
+@Table(name = "compra", schema = "bdtrabalho")
 public class Compra implements Serializable {
 
 

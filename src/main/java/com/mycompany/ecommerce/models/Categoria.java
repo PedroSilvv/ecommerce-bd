@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 
 @Entity
-@Table(name = "categoria")
+@Table(name = "categoria", schema = "bdtrabalho")
 public class Categoria implements Serializable {
 
     @Serial
@@ -38,3 +38,5 @@ public class Categoria implements Serializable {
         this.nome = nome;
     }
 }
+
+//teste

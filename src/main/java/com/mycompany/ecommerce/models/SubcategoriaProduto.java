@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.io.Serial;
 
 @Entity
-@Table(name = "subcategoria_produto")
+@Table(name = "subcategoria_produto", schema = "bdtrabalho")
 public class SubcategoriaProduto {
 
     @Serial
