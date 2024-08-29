@@ -11,7 +11,9 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public interface ProdutoRepository extends JpaRepository<Produto, Long> {
@@ -70,9 +72,21 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
     );
 
 
-    @Query(value = "select * from produto order by quantidade_vendas desc", nativeQuery = true)
-    List<Produto> findMostSelled();
+    @Query(value = "SELECT produto.id, produto.nome , produto.quantidade_vendas FROM produto ORDER BY quantidade_vendas DESC", nativeQuery = true)
+    List<Map<String, Object>> findMostSelled();
 
+    @Query(value =
+            "SELECT p.id, p.nome, SUM(ci.quantidade_item) AS total_vendido, (SUM(ci.quantidade_item) * p.preco) as total_receita\n" +
+            "FROM produto p\n" +
+            "JOIN compra_item ci ON p.id = ci.produto_id\n" +
+            "JOIN compra c ON ci.compra_id = c.id\n" +
+            "WHERE c.data_compra BETWEEN (:data_i) AND (:data_f)\n" +
+            "GROUP BY p.id, p.nome",
+            nativeQuery = true)
+    List<Map<String, Object>> findMostSelledByDate(
+            @Param("data_i") Date dataI,
+            @Param("data_f") Date dataF
+    );
 
 
 }

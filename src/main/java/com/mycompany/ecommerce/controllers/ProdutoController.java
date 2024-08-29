@@ -17,11 +17,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Filter;
 
 @RestController
 @RequestMapping(value = "/api")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ProdutoController {
 
     @Autowired
@@ -105,5 +111,26 @@ public class ProdutoController {
         return customProdutoRepository.buscarPorTermo(termo);
     }
 
+    @GetMapping("/filtrar-mais-vendidos")
+    public ResponseEntity<?> filtrarMaisVendidos(){
+        List<Map<String, Object>> produtos = produtoRepository.findMostSelled();
+
+        return ResponseEntity.ok().body(produtos);
+    }
+
+    @GetMapping("filtrar-mais-vendido-por-data/{datai}/{dataf}")
+    public ResponseEntity<?> filtrarMaisVendidosPorData(@PathVariable(value = "datai") String dataI,
+                                                        @PathVariable(value = "dataf") String dataF){
+
+        LocalDate localDateI = LocalDate.parse(dataI);
+        Date dataConvertidaI = Date.from(localDateI.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        LocalDate localDateF = LocalDate.parse(dataF);
+        Date dataConvertidaF = Date.from(localDateF.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        List<Map<String, Object>> produtos = produtoRepository.findMostSelledByDate(dataConvertidaI, dataConvertidaF);
+
+        return ResponseEntity.ok().body(produtos);
+    }
 
 }

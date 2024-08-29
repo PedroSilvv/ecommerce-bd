@@ -91,6 +91,7 @@ INSERT INTO subcategoria (nome, categoria_principal_id) VALUES ('TINTO', 2);
 INSERT INTO subcategoria (nome, categoria_principal_id) VALUES ('ROSE', 2);
 INSERT INTO subcategoria (nome, categoria_principal_id) VALUES ('PORTO', 2);
 INSERT INTO subcategoria (nome, categoria_principal_id) VALUES ('DOCE', 2);
+INSERT INTO subcategoria (nome, categoria_principal_id) VALUES ('SECO', 2);
 INSERT INTO subcategoria (nome, categoria_principal_id) VALUES ('COQUETEL', 3);
 INSERT INTO subcategoria (nome, categoria_principal_id) VALUES ('APERITIVO', 3);
 
@@ -131,12 +132,13 @@ alter table produto add column quantidade_vendas INTEGER DEFAULT 0;
 
 alter table compra add column data_compra DATE;
 
-select produto.nome from produto order by quantidade_vendas desc;
+select produto.id ,produto.nome as produto, produto.quantidade from produto order by quantidade_vendas desc;
 
-SELECT p.id, p.nome, SUM(ci.quantidade_item) AS total_vendido
+SELECT p.id, p.nome, SUM(ci.quantidade_item) AS total_vendido, (SUM(ci.quantidade_item) * p.preco) as total_receita
 FROM produto p
 JOIN compra_item ci ON p.id = ci.produto_id
 JOIN compra c ON ci.compra_id = c.id
-WHERE c.data_compra = '2024-08-26'
+WHERE c.data_compra BETWEEN '2024-08-26' AND '2024-08-28'
 GROUP BY p.id, p.nome
+ORDER BY total_receita DESC
 
