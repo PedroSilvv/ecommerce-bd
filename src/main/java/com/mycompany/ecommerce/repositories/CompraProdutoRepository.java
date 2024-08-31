@@ -15,10 +15,10 @@ public interface CompraProdutoRepository extends JpaRepository<CompraProduto, Lo
 
     @Modifying
     @Transactional
-    @Query(value = "INSERT INTO compra_item (compra_id, produto_id, quantidade_item)" +
-            " VALUES (:compra_id, :produto_id, :quantidade_item)", nativeQuery = true)
+    @Query(value = "INSERT INTO compra_item (compra_nota_fiscal, produto_id, quantidade_item)" +
+            " VALUES (:compra_nota_fiscal, :produto_id, :quantidade_item)", nativeQuery = true)
     void createCompraProduto(
-            @Param("compra_id") Long compraId,
+            @Param("compra_nota_fiscal") String compraId,
             @Param("produto_id") Long produtoId,
             @Param("quantidade_item") Integer quantidadeItem
     );

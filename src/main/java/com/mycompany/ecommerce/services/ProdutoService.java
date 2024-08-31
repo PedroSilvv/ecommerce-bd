@@ -14,6 +14,7 @@ import com.mycompany.ecommerce.repositories.custom.CustomProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.math.BigDecimal;
@@ -39,7 +40,13 @@ public class ProdutoService {
     CustomProdutoRepository customProdutoRepository;
 
     public void createProduto(Categoria categoria, String nome, String descricao, Integer quantidade, BigDecimal preco) {
+        System.out.println("ProdutoService.createProduto");
         produtoRepository.createProduto(categoria.getId(), nome, descricao, quantidade, preco);
+    }
+
+    public Long inserirProdutoRetornoId(Categoria categoria, String nome, String descricao, Integer quantidade, BigDecimal preco) throws Exception {
+        System.out.println("ProdutoService.createProduto");
+        return customProdutoRepository.inserirProdutoReturningId(categoria.getId(), nome, descricao, quantidade, preco);
     }
 
     public List<Produto> findProdutoByCategoria(Long idCategoria) throws Exception {
@@ -53,34 +60,39 @@ public class ProdutoService {
         return produtoRepository.findByCategoria(idCategoria);
     }
 
+
     public Produto cadastrarNovoProduto(CadastrarProdutoRequestDTO produto) throws Exception {
 
         try{
-            this.createProduto(
+            System.out.println("ProdutoService.cadastrarNovoProduto");
+
+            for (String sub : produto.getSubcategorias()) {
+                Subcategoria subcategoria = subcategoriaRepository.findByNome(sub);
+
+                if(!subcategoria.getCategoria().getId().equals(produto.getCategoria().getId())){
+                    throw new Exception("Subcategoria não permitida.");
+                }
+            }
+
+            Long idNovoProduto = this.inserirProdutoRetornoId(
                     produto.getCategoria(), produto.getNome(),
                     produto.getDescricao(), produto.getQuantidade(),
                     produto.getPreco()
             );
 
-            Long novoProdutoId = produtoRepository.findLastInsertId();
-            Produto novoProduto = produtoRepository.findByIdProduto(novoProdutoId);
-
-            System.out.println(produto.getSubcategorias());
+            Produto novoProduto = produtoRepository.findByIdProduto(idNovoProduto);
 
             for (String sub : produto.getSubcategorias()) {
                 SubcategoriaProduto subcategoriaProduto = new SubcategoriaProduto();
 
                 Subcategoria subcategoria = subcategoriaRepository.findByNome(sub);
 
-                if(subcategoria == null){
-                    throw new Exception("Subcategoria inexistente");
-                }
 
                 System.out.println(novoProduto);
-                System.out.println(subcategoria);
 
                 subcategoriaProduto.setProduto(novoProduto);
                 subcategoriaProduto.setSubcategoria(subcategoria);
+                System.out.println(subcategoria);
                 subcategoriaProdutoRepository.create(
                         subcategoriaProduto.getSubcategoria().getId(),
                         subcategoriaProduto.getProduto().getId());
@@ -89,7 +101,7 @@ public class ProdutoService {
             return novoProduto;
 
         } catch (Exception e) {
-            throw new Exception();
+            throw new Exception(e.getMessage());
         }
     }
 
@@ -115,12 +127,6 @@ public class ProdutoService {
 
         try{
             Produto produto = produtoRepository.findByIdProduto(id);
-
-//            produto.setNome(novoProduto.getNome());
-//            produto.setCategoria(novoProduto.getCategoria());
-//            produto.setQuantidade(novoProduto.getQuantidade());
-//            produto.setPreco(novoProduto.getPreco());
-//            produto.setDescricao(novoProduto.getDescricao());
 
             produtoRepository.updateProduto(
                     novoProduto.getNome(),

@@ -15,13 +15,9 @@ import java.util.Set;
 public class Compra implements Serializable {
 
 
-    @Serial
-    private static final long serialVersionUID= 1L;
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+    @Column(name = "nota_fiscal")
+    private String notaFiscal;
 
     @ManyToOne
     @JoinColumn(name = "usuario_doc", nullable = false)
@@ -50,12 +46,12 @@ public class Compra implements Serializable {
         this.compraProdutos = compraProdutos;
     }
 
-    public Long getId() {
-        return id;
+    public String getNotaFiscal() {
+        return notaFiscal;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setNotaFiscal(String notaFiscal) {
+        this.notaFiscal = notaFiscal;
     }
 
     public Usuario getUsuario() {

@@ -21,7 +21,7 @@ public class CompraProduto implements Serializable {
 
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "compra_id", nullable = false)
+    @JoinColumn(name = "compra_nota_fiscal", nullable = false)
     private Compra compra;
 
     @ManyToOne

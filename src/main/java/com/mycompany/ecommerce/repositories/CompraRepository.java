@@ -21,24 +21,25 @@ public interface CompraRepository extends JpaRepository<Compra, Long> {
 
     @Modifying
     @Transactional
-    @Query(value = "INSERT INTO compra (usuario_doc, status_compra, preco_total, data_compra)" +
-            " VALUES (:usuario_doc, :status_compra, :preco_total, :data_compra)", nativeQuery = true)
+    @Query(value = "INSERT INTO compra (nota_fiscal, usuario_doc, status_compra, preco_total, data_compra)" +
+            " VALUES (:nota_fiscal, :usuario_doc, :status_compra, :preco_total, :data_compra)", nativeQuery = true)
     void createCompra(
+            @Param("nota_fiscal") String nota_fiscal,
             @Param("usuario_doc") String usuarioDoc,
             @Param("status_compra") String statusCompra,
             @Param("preco_total") BigDecimal precoTotal,
             @Param("data_compra") Date dataCompra
     );
 
-    @Query(value = "SELECT LAST_INSERT_ID()", nativeQuery = true)
-    Long findLastInsertId();
+    @Query(value = "SELECT currval(pg_get_serial_sequence('compra', 'nota_fiscal'))", nativeQuery = true)
+    String getLastInsertedId();
 
     @Modifying
     @Transactional
-    @Query(value = "UPDATE compra SET preco_total = (:preco_total) WHERE id = (:id)", nativeQuery = true)
+    @Query(value = "UPDATE compra SET preco_total = (:preco_total) WHERE nota_fiscal = (:nota_fiscal)", nativeQuery = true)
     void updatePrecoTotal(
             @Param("preco_total") BigDecimal precoTotal,
-            @Param("id") Long id
+            @Param("nota_fiscal") String id
     );
 
 }

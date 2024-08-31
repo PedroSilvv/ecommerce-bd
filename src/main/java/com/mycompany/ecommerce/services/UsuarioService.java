@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.management.relation.Role;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -19,10 +20,10 @@ public class UsuarioService {
         return usuarioRepository.findAll();
     }
 
-    public void createUser(String doc, String nome, Usuario.Role role, String password) throws Exception {
+    public void createUser(String doc, String nome, Usuario.Role role, String password, Date dataNasc) throws Exception {
 
         usuarioRepository.createUser(
-                doc, nome, role.toString(), password
+                doc, nome, role.toString(), password, dataNasc
         );
 
     }

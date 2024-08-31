@@ -10,6 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 
 @Entity
@@ -30,6 +31,16 @@ public class Usuario implements Serializable {
     @Column(name = "password", nullable = false, length = 250)
     private String password;
 
+    @Column(name = "data_nasc", nullable = false)
+    private Date dataNasc;
+
+    public Date getDataNasc() {
+        return dataNasc;
+    }
+
+    public void setDataNasc(Date dataNasc) {
+        this.dataNasc = dataNasc;
+    }
 
     public String getDoc() {
         return doc;

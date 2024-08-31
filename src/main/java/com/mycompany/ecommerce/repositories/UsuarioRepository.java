@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -21,12 +22,13 @@ public interface UsuarioRepository extends JpaRepository<Usuario, String> {
 
     @Modifying
     @Transactional
-    @Query(value = "INSERT INTO usuario VALUES (:doc, :nome, :user_role, :password)", nativeQuery = true)
+    @Query(value = "INSERT INTO usuario VALUES (:doc, :nome, :user_role, :password, :data_nasc)", nativeQuery = true)
     void createUser(
             @Param("doc") String doc,
             @Param("nome") String nome,
             @Param("user_role") String role,
-            @Param("password") String password
+            @Param("password") String password,
+            @Param("data_nasc") Date dataNasc
 
     );
 

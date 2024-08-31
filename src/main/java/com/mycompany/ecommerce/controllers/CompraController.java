@@ -21,7 +21,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/api")
@@ -47,14 +49,22 @@ public class CompraController {
             LocalDateTime localTime = LocalDateTime.now();
             Date localDate = Date.from(localTime.atZone(ZoneId.systemDefault()).toInstant());
 
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+            String dataFormatada = localTime.format(formatter);
+            String uuid = UUID.randomUUID().toString().replaceAll("-", "");
+            String numeroAleatorio = uuid.substring(0, 6).toUpperCase();
+            String notaFiscalFinal = "NF"+dataFormatada+numeroAleatorio;
+
             Compra novaCompra = new Compra();
             novaCompra.setUsuario(requestDTO.getUsuario());
             novaCompra.setStatus(Compra.Status.PENDENTE);
             novaCompra.setPrecoTotal(BigDecimal.ZERO);
             novaCompra.setDataCompra(localDate);
-            compraRepository.createCompra(novaCompra.getUsuario().getDoc(), novaCompra.getStatus().toString(), novaCompra.getPrecoTotal(), novaCompra.getDataCompra());
+            novaCompra.setNotaFiscal(notaFiscalFinal);
+            compraRepository.createCompra(notaFiscalFinal, novaCompra.getUsuario().getDoc(), novaCompra.getStatus().toString(), novaCompra.getPrecoTotal(), novaCompra.getDataCompra());
 
-            Long idCompra = compraRepository.findLastInsertId();
+            String idCompra = compraRepository.getLastInsertedId();
+            System.out.println("Nota fiscal gerada: " + idCompra);
 
             Double produtoTotalPreco = 0.0;
 
@@ -71,7 +81,7 @@ public class CompraController {
                 compraProduto.setProduto(produtoComprado);
                 compraProduto.setQuantidadeItem(produto.getQuantidadeComprada());
 
-                compraProdutoRepository.createCompraProduto(idCompra,
+                compraProdutoRepository.createCompraProduto(notaFiscalFinal,
                         compraProduto.getProduto().getId(), compraProduto.getQuantidadeItem());
 
                 novaCompra.getCompraProdutos().add(compraProduto);

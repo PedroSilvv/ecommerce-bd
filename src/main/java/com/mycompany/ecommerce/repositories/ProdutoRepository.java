@@ -40,9 +40,6 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
     @Query(value = "SELECT * FROM produto WHERE categoria_id = (:categoria_id)", nativeQuery = true)
     List<Produto> findByCategoria(@Param("categoria_id") Long categoria);
 
-    @Query(value = "SELECT LAST_INSERT_ID()", nativeQuery = true)
-    Long findLastInsertId();
-
     @Modifying
     @Transactional
     @Query(value = "UPDATE produto SET quantidade = (:novo_valor) WHERE id = (:id)", nativeQuery = true)
@@ -79,7 +76,7 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
             "SELECT p.id, p.nome, SUM(ci.quantidade_item) AS total_vendido, (SUM(ci.quantidade_item) * p.preco) as total_receita\n" +
             "FROM produto p\n" +
             "JOIN compra_item ci ON p.id = ci.produto_id\n" +
-            "JOIN compra c ON ci.compra_id = c.id\n" +
+            "JOIN compra c ON ci.compra_nota_fiscal = c.nota_fiscal\n" +
             "WHERE c.data_compra BETWEEN (:data_i) AND (:data_f)\n" +
             "GROUP BY p.id, p.nome",
             nativeQuery = true)

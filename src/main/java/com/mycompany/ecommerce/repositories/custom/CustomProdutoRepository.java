@@ -1,6 +1,7 @@
 package com.mycompany.ecommerce.repositories.custom;
 
 import com.mycompany.ecommerce.dtos.FiltrarProdutoResponseDTO;
+import com.mycompany.ecommerce.models.Categoria;
 import com.mycompany.ecommerce.models.Produto;
 import com.mycompany.ecommerce.models.SubcategoriaProduto;
 import com.mycompany.ecommerce.repositories.ProdutoRepository;
@@ -27,6 +28,30 @@ public class CustomProdutoRepository {
 
     @Autowired
     SubcategoriaProdutoRepository subcategoriaProdutoRepository;
+
+
+    public Long inserirProdutoReturningId(Long categoria, String nome, String descricao, Integer quantidade, BigDecimal preco) throws Exception {
+        StringBuilder queryBuilder = new StringBuilder(
+                "INSERT INTO produto (categoria_id, nome, descricao, quantidade, preco) " +
+                "VALUES (:categoria, :nome, :descricao, :quantidade, :preco) " +
+                "RETURNING id ");
+
+        Query query = entityManager.createNativeQuery(queryBuilder.toString());
+        query.setParameter("categoria", categoria);
+        query.setParameter("nome", nome);
+        query.setParameter("descricao", descricao);
+        query.setParameter("quantidade", quantidade);
+        query.setParameter("preco", preco);
+
+        Object idProduto = query.getSingleResult();
+
+        if (idProduto != null) {
+            return ((Number) idProduto).longValue();
+        } else {
+            throw new Exception("Id retornado errado: "+idProduto);
+        }
+
+    }
 
     public List<FiltrarProdutoResponseDTO> filtrarProdutos(String nome, String categoria, BigDecimal precoMinimo, BigDecimal precoMaximo, String descricao) {
         StringBuilder queryBuilder = new StringBuilder("SELECT p.nome, p.preco, p.quantidade, c.nome, p.descricao, p.id " +

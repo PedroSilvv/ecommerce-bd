@@ -46,6 +46,16 @@ public class ProdutoController {
     CustomProdutoRepository customProdutoRepository;
 
 
+    @GetMapping("/produto/{id}")
+    public ResponseEntity<?> buscarProduto(@PathVariable(value = "id") Long id){
+        try{
+            Produto produto = produtoRepository.findByIdProduto(id);
+            return ResponseEntity.ok().body(produto);
+        }catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @PostMapping("/cadastrar-produto")
     public ResponseEntity<?> cadastrarProduto(@RequestBody CadastrarProdutoRequestDTO produto){
 
