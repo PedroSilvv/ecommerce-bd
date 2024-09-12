@@ -21,7 +21,7 @@ CREATE TABLE produto (
                          preco DECIMAL(10, 2) NOT NULL,
                          marca VARCHAR(50),
                          quantidade_vendas INTEGER DEFAULT 0,
-                         FOREIGN KEY (categoria_id) REFERENCES categoria(id) ON DELETE SET NULL
+                         constraint fk_categoria_id FOREIGN KEY (categoria_id) REFERENCES categoria(id) ON DELETE SET NULL
 );
 
 
@@ -31,7 +31,7 @@ CREATE TABLE compra (
                         status_compra VARCHAR(20) NOT NULL,
                         preco_total DECIMAL(10, 2) NOT NULL,
                         data_compra DATE,
-                        FOREIGN KEY (usuario_doc) REFERENCES usuario(doc) ON DELETE SET NULL
+                        constraint fk_usuario_doc FOREIGN KEY (usuario_doc) REFERENCES usuario(doc) ON DELETE SET NULL
 );
 
 
@@ -40,8 +40,8 @@ CREATE TABLE compra_item (
                              compra_nota_fiscal VARCHAR,
                              produto_id INTEGER,
                              quantidade_item INTEGER,
-                             FOREIGN KEY (compra_nota_fiscal) REFERENCES compra(nota_fiscal) ON DELETE CASCADE,
-                             FOREIGN KEY (produto_id) REFERENCES produto(id) ON DELETE SET NULL
+                             constraint fk_compra_nota_fiscal FOREIGN KEY (compra_nota_fiscal) REFERENCES compra(nota_fiscal) ON DELETE CASCADE,
+                             constraint fk_produto_id FOREIGN KEY (produto_id) REFERENCES produto(id) ON DELETE SET NULL
 );
 
 
@@ -49,7 +49,7 @@ CREATE TABLE subcategoria (
                               id SERIAL PRIMARY KEY,
                               nome VARCHAR(100) NOT NULL UNIQUE,
                               categoria_principal_id INTEGER NOT NULL,
-                              FOREIGN KEY (categoria_principal_id) REFERENCES categoria(id) ON DELETE CASCADE
+                              constraint fk_categoria_id FOREIGN KEY (categoria_principal_id) REFERENCES categoria(id) ON DELETE CASCADE
 );
 
 
@@ -58,12 +58,11 @@ CREATE TABLE subcategoria_produto (
                                       id SERIAL PRIMARY KEY,
                                       subcategoria_id INTEGER,
                                       produto_id INTEGER,
-                                      FOREIGN KEY (subcategoria_id) REFERENCES subcategoria(id),
-                                      FOREIGN KEY (produto_id) REFERENCES produto(id)
+                                      constraint fk_subcategoria_id FOREIGN KEY (subcategoria_id) REFERENCES subcategoria(id) on delete CASCADE,
+                                      constraint fk_produto_id FOREIGN KEY (produto_id) REFERENCES produto(id) on delete CASCADE
 );
 
-ALTER TABLE subcategoria_produto
-    ADD FOREIGN KEY (produto_id) REFERENCES produto(id) ON DELETE CASCADE;
+
 
 select * from subcategoria_produto;
 
@@ -112,7 +111,7 @@ OR p.descricao ILIKE '%vodka%'
 OR p.marca ILIKE '%vodka%'
 OR c.nome ILIKE '%vodka%';
 
-SELECT produto.id, produto.nome AS produto, produto.quantidade
+SELECT produto.id, produto.nome AS produto, produto.quantidade_vendas
 FROM produto
 ORDER BY quantidade_vendas DESC;
 
@@ -121,7 +120,7 @@ SELECT p.id, p.nome, SUM(ci.quantidade_item) AS total_vendido,
 FROM produto p
          JOIN compra_item ci ON p.id = ci.produto_id
          JOIN compra c ON ci.compra_nota_fiscal = c.nota_fiscal
-WHERE c.data_compra BETWEEN '2024-08-26' AND '2024-08-30'
+WHERE c.data_compra BETWEEN '2024-08-30' AND '2024-09-01'
 GROUP BY p.id, p.nome
 ORDER BY total_receita DESC;
 
@@ -136,6 +135,37 @@ select * from subcategoria_produto
 
 select * from subcategoria
 
-    INSERT INTO produto (categoria_id, nome, descricao, quantidade, preco) VALUES (4, 'Askov Morango', 'Vodka Askov Morango 1L', 91, 20.00) RETURNING id;
+INSERT INTO produto (categoria_id, nome, descricao, quantidade, preco) VALUES (4, 'Askov Morango', 'Vodka Askov Morango 1L', 91, 20.00) RETURNING id;
 
-delete from produto where id = 1;
+alter table usuario add constraint ck_usuario_role CHECK (user_role IN ('ADMIN', 'CLIENTE'));
+
+alter table usuario drop constraint ck_usuario_role;
+
+alter table usuario add constraint ck_usuario_role CHECK (user_role IN ('ADMIN', 'CLIENTE', 'DEFAULT'));
+
+alter table compra_item add column preco_total_item DECIMAL(10, 2);
+
+WITH compras_ordenadas AS (
+    SELECT usuario_doc,
+           data_compra,
+           LAG(data_compra) OVER (PARTITION BY usuario_doc ORDER BY data_compra) AS compra_anterior
+    FROM compra
+),
+     tempo_entre_compras AS (
+         SELECT usuario_doc,
+                EXTRACT(EPOCH FROM (data_compra - compra_anterior))/86400 AS dias_entre_compras
+         FROM compras_ordenadas
+         WHERE compra_anterior IS NOT NULL
+     )
+SELECT CASE
+           WHEN EXTRACT(YEAR FROM AGE(data_nasc)) BETWEEN 18 AND 25 THEN '18-25'
+           WHEN EXTRACT(YEAR FROM AGE(data_nasc)) BETWEEN 26 AND 35 THEN '26-35'
+           WHEN EXTRACT(YEAR FROM AGE(data_nasc)) BETWEEN 36 AND 45 THEN '36-45'
+           WHEN EXTRACT(YEAR FROM AGE(data_nasc)) > 45 THEN '46+'
+           ELSE 'Desconhecido'
+           END AS faixa_etaria,
+       AVG(dias_entre_compras) AS tempo_medio_entre_compras
+FROM tempo_entre_compras
+         JOIN usuario ON tempo_entre_compras.usuario_doc = usuario.doc
+GROUP BY faixa_etaria
+ORDER BY faixa_etaria;
