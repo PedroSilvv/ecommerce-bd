@@ -1,10 +1,12 @@
 package com.mycompany.ecommerce.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "compra_item")
@@ -26,10 +28,16 @@ public class CompraProduto implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "produto_id", nullable = false)
+    @JsonProperty
     private Produto produto;
 
     @Column(name = "quantidade_item", nullable = false)
+    @JsonProperty
     private Integer quantidadeItem;
+
+    @Column(name = "preco_total_item")
+    @JsonProperty
+    private BigDecimal precoTotalItem;
 
     public Long getId() {
         return id;
@@ -61,5 +69,13 @@ public class CompraProduto implements Serializable {
 
     public void setQuantidadeItem(Integer quantidadeItem) {
         this.quantidadeItem = quantidadeItem;
+    }
+
+    public BigDecimal getPrecoTotalItem() {
+        return precoTotalItem;
+    }
+
+    public void setPrecoTotalItem(BigDecimal precoTotalItem) {
+        this.precoTotalItem = precoTotalItem;
     }
 }

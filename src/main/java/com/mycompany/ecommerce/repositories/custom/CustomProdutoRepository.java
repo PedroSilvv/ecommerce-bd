@@ -102,9 +102,9 @@ public class CustomProdutoRepository {
             Integer quantidadeProduto = (Integer) o[2];
             String categoriaProduto = (String) o[3];
             String descricaoProduto = (String) o[4];
-            Integer idProduto = (Integer) o[5];
+            Long idProduto = (Long) o[5];
 
-            Produto produto = produtoRepository.findByIdProduto(idProduto.longValue());
+            Produto produto = produtoRepository.findByIdProduto(idProduto);
             List<SubcategoriaProduto> subcategorias = subcategoriaProdutoRepository.findByProduto(produto);
 
             List<String> subcategoriasNome = new ArrayList<>();
@@ -123,10 +123,10 @@ public class CustomProdutoRepository {
         StringBuilder queryBuilder = new StringBuilder("SELECT p.nome, p.preco, p.quantidade, c.nome, p.descricao, p.id \n" +
                 "FROM produto p\n" +
                 "JOIN categoria c ON p.categoria_id = c.id \n" +
-                "WHERE p.nome LIKE :termo \n" +
-                "OR p.descricao LIKE :termo \n" +
-                "OR p.marca LIKE :termo \n" +
-                "OR c.nome LIKE :termo");
+                "WHERE p.nome ILIKE :termo \n" +
+                "OR p.descricao ILIKE :termo \n" +
+                "OR p.marca ILIKE :termo \n" +
+                "OR c.nome ILIKE :termo");
 
         Query query = entityManager.createNativeQuery(queryBuilder.toString());
 
@@ -143,9 +143,9 @@ public class CustomProdutoRepository {
             Integer quantidadeProduto = (Integer) o[2];
             String categoriaProduto = (String) o[3];
             String descricaoProduto = (String) o[4];
-            Integer idProduto = (Integer) o[5];
+            Long idProduto = (Long) o[5];
 
-            Produto produto = produtoRepository.findByIdProduto(idProduto.longValue());
+            Produto produto = produtoRepository.findByIdProduto(idProduto);
             List<SubcategoriaProduto> subcategorias = subcategoriaProdutoRepository.findByProduto(produto);
 
             List<String> subcategoriasNome = new ArrayList<>();

@@ -12,12 +12,13 @@ import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 @Repository
 public interface CompraRepository extends JpaRepository<Compra, Long> {
 
-    @Query(value = "SELECT * FROM produto WHERE usuario_doc = (:usuario_doc)", nativeQuery = true)
-    Produto findByUsuario(@Param("usuario_doc") String usuarioDoc);
+    @Query(value = "SELECT * FROM compra WHERE usuario_doc = (:usuario_doc)", nativeQuery = true)
+    List<Compra> findByUsuario(@Param("usuario_doc") String usuarioDoc);
 
     @Modifying
     @Transactional
@@ -30,9 +31,6 @@ public interface CompraRepository extends JpaRepository<Compra, Long> {
             @Param("preco_total") BigDecimal precoTotal,
             @Param("data_compra") Date dataCompra
     );
-
-    @Query(value = "SELECT currval(pg_get_serial_sequence('compra', 'nota_fiscal'))", nativeQuery = true)
-    String getLastInsertedId();
 
     @Modifying
     @Transactional
