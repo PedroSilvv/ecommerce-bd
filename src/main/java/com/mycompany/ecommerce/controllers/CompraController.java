@@ -1,5 +1,6 @@
 package com.mycompany.ecommerce.controllers;
 
+import com.mycompany.ecommerce.dtos.CompraResponseDTO;
 import com.mycompany.ecommerce.dtos.EfetuarCompraRequestDTO;
 import com.mycompany.ecommerce.dtos.ProdutoRequestDTO;
 import com.mycompany.ecommerce.models.Compra;
@@ -8,6 +9,7 @@ import com.mycompany.ecommerce.models.Produto;
 import com.mycompany.ecommerce.repositories.CompraProdutoRepository;
 import com.mycompany.ecommerce.repositories.CompraRepository;
 import com.mycompany.ecommerce.repositories.ProdutoRepository;
+import com.mycompany.ecommerce.services.CompraService;
 import com.mycompany.ecommerce.services.ProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +39,8 @@ public class CompraController {
 
     @Autowired
     ProdutoRepository produtoRepository;
+    @Autowired
+    private CompraService compraService;
 
     @PostMapping("/compra/efetuar-compra")
     public ResponseEntity<?> efetuarComprar(@RequestBody EfetuarCompraRequestDTO requestDTO){
@@ -99,6 +103,18 @@ public class CompraController {
             return ResponseEntity.ok().body(novaCompra);
         }
         catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/compras/{doc}")
+    public ResponseEntity<?> comprarPorUsuario(@PathVariable("doc") String doc){
+
+        try{
+            List<CompraResponseDTO> compraList = compraService.compraPorUsuario(doc);
+            return ResponseEntity.ok().body(compraList);
+        }
+        catch (Exception e ){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

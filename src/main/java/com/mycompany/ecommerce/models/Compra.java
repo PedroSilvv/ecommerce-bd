@@ -1,5 +1,7 @@
 package com.mycompany.ecommerce.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -31,6 +33,7 @@ public class Compra implements Serializable {
     private BigDecimal precoTotal;
 
     @OneToMany(mappedBy = "compra", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private Set<CompraProduto> compraProdutos = new HashSet<>();
 
     @Column(name = "data_compra", nullable = false)
@@ -91,4 +94,15 @@ public class Compra implements Serializable {
     }
 
 
+    @Override
+    public String toString() {
+        return "Compra{" +
+                "notaFiscal='" + notaFiscal + '\'' +
+                ", usuario=" + usuario +
+                ", status=" + status +
+                ", precoTotal=" + precoTotal +
+                ", compraProdutos=" + compraProdutos +
+                ", dataCompra=" + dataCompra +
+                '}';
+    }
 }

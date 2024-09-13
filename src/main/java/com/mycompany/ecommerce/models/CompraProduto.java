@@ -1,5 +1,6 @@
 package com.mycompany.ecommerce.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -21,9 +22,11 @@ public class CompraProduto implements Serializable {
     @Column(name = "id")
     private Long id;
 
-    @JsonIgnore
+
     @ManyToOne
     @JoinColumn(name = "compra_nota_fiscal", nullable = false)
+    @JsonBackReference
+    @JsonIgnore
     private Compra compra;
 
     @ManyToOne
