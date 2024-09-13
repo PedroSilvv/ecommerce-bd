@@ -169,3 +169,16 @@ FROM tempo_entre_compras
          JOIN usuario ON tempo_entre_compras.usuario_doc = usuario.doc
 GROUP BY faixa_etaria
 ORDER BY faixa_etaria;
+
+
+CREATE TABLE avaliacao (
+        id SERIAL PRIMARY KEY,
+        produto_id INTEGER NOT NULL,
+        usuario_doc VARCHAR NOT NULL,
+        nota INTEGER,
+        data_avaliacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        constraint fk_produto_id FOREIGN KEY (produto_id) REFERENCES produto(id) on delete cascade,
+        constraint fk_usuario_doc FOREIGN KEY (usuario_doc) REFERENCES usuario(doc) on delete cascade,
+        constraint ck_range_nota check (nota >= 0 AND nota <= 5)
+);
+
