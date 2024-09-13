@@ -12,7 +12,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 @Configuration
@@ -32,6 +32,10 @@ public class SecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
+    @Bean
+    public AuthFilterToken authFilterToken() {
+        return new AuthFilterToken();
+    }
 
 
     @Bean
@@ -40,8 +44,13 @@ public class SecurityConfig {
         http.cors(Customizer.withDefaults());
         http.csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**").hasAuthority("ADMIN")
-                        .anyRequest().permitAll());
+                .authorizeHttpRequests(auth ->{
+                auth.requestMatchers("/api/auth/**").hasAuthority("ADMIN");
+                auth.requestMatchers("/api/compra/**", "/api/avaliacao/**").hasAuthority("DEFAULT");
+                auth.anyRequest().permitAll();
+                });
+        http.addFilterBefore(authFilterToken(), UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 }

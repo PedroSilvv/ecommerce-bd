@@ -1,17 +1,20 @@
 package com.mycompany.ecommerce.models;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.awt.*;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 @Entity
 @Table(name = "usuario")
@@ -31,7 +34,7 @@ public class Usuario implements Serializable {
     @Column(name = "password", nullable = false, length = 250)
     private String password;
 
-    @Column(name = "data_nasc", nullable = false)
+    @Column(name = "data_nasc")
     private Date dataNasc;
 
     public Date getDataNasc() {

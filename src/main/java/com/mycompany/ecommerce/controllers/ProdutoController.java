@@ -56,7 +56,7 @@ public class ProdutoController {
         }
     }
 
-    @PostMapping("/cadastrar-produto")
+    @PostMapping("/auth/cadastrar-produto")
     public ResponseEntity<?> cadastrarProduto(@RequestBody CadastrarProdutoRequestDTO produto){
 
         try{
@@ -95,7 +95,7 @@ public class ProdutoController {
         return ResponseEntity.ok(produtos);
     }
 
-    @PostMapping("/atualizar-produto/{id}")
+    @PostMapping("/auth/atualizar-produto/{id}")
     public ResponseEntity<?> atualizarProduto(@PathVariable(value = "id") Long id,
                                                     @RequestBody Produto requestDTO){
 

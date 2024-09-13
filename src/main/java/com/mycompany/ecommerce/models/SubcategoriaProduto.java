@@ -3,10 +3,11 @@ package com.mycompany.ecommerce.models;
 import jakarta.persistence.*;
 
 import java.io.Serial;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "subcategoria_produto")
-public class SubcategoriaProduto {
+public class SubcategoriaProduto implements Serializable {
 
     @Serial
     private static final long serialVersionUID= 1L;

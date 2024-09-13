@@ -62,7 +62,16 @@ CREATE TABLE subcategoria_produto (
                                       constraint fk_produto_id FOREIGN KEY (produto_id) REFERENCES produto(id) on delete CASCADE
 );
 
-
+CREATE TABLE avaliacao (
+                           id SERIAL PRIMARY KEY,
+                           produto_id INTEGER NOT NULL,
+                           usuario_doc VARCHAR NOT NULL,
+                           nota INTEGER,
+                           data_avaliacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                           constraint fk_produto_id FOREIGN KEY (produto_id) REFERENCES produto(id) on delete cascade,
+                           constraint fk_usuario_doc FOREIGN KEY (usuario_doc) REFERENCES usuario(doc) on delete cascade,
+                           constraint ck_range_nota check (nota >= 0 AND nota <= 5)
+);
 
 select * from subcategoria_produto;
 
@@ -145,6 +154,8 @@ alter table usuario add constraint ck_usuario_role CHECK (user_role IN ('ADMIN',
 
 alter table compra_item add column preco_total_item DECIMAL(10, 2);
 
+
+
 WITH compras_ordenadas AS (
     SELECT usuario_doc,
            data_compra,
@@ -171,14 +182,5 @@ GROUP BY faixa_etaria
 ORDER BY faixa_etaria;
 
 
-CREATE TABLE avaliacao (
-        id SERIAL PRIMARY KEY,
-        produto_id INTEGER NOT NULL,
-        usuario_doc VARCHAR NOT NULL,
-        nota INTEGER,
-        data_avaliacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        constraint fk_produto_id FOREIGN KEY (produto_id) REFERENCES produto(id) on delete cascade,
-        constraint fk_usuario_doc FOREIGN KEY (usuario_doc) REFERENCES usuario(doc) on delete cascade,
-        constraint ck_range_nota check (nota >= 0 AND nota <= 5)
-);
+
 
