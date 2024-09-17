@@ -182,5 +182,14 @@ GROUP BY faixa_etaria
 ORDER BY faixa_etaria;
 
 
+SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM avaliacao where usuario_doc = '1' and produto_id = 2;
+
+
+select p.nome as produto, (SELECT SUM(a.nota) / COUNT(*) FROM avaliacao a WHERE a.produto_id = p.id) as media
+from produto p
+WHERE exists ( SELECT 1 FROM avaliacao a2 WHERE a2.produto_id = p.id)
+order by media asc;
+
+
 
 

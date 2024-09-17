@@ -85,4 +85,11 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
     );
 
 
+    @Query(value =
+            "select p.nome as produto, (SELECT SUM(a.nota) / COUNT(*) FROM avaliacao a WHERE a.produto_id = p.id) as media\n" +
+            "from produto p \n" +
+            "WHERE exists ( SELECT 1 FROM avaliacao a2 WHERE a2.produto_id = p.id)\n" +
+            "order by media asc;", nativeQuery = true)
+    List<Map<String, Object>> findMostPopulars();
+
 }

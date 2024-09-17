@@ -23,4 +23,11 @@ public interface AvaliacaoRepository extends JpaRepository<Avaliacao, Long> {
     @Query(value = "SELECT * FROM avaliacao WHERE id = (:id)", nativeQuery = true)
     Avaliacao findByIdAvaliacao(@Param("id") Long id);
 
+
+    @Query(value = "SELECT CASE WHEN COUNT(*) > 0 THEN true ELSE false END FROM avaliacao " +
+                   "WHERE usuario_doc = :usuario_doc and produto_id = :produto_id", nativeQuery = true)
+    boolean existsByProdutoAndUserDoc(
+            @Param("usuario_doc") String usuarioDoc,
+            @Param("produto_id") Long produtoId
+    );
 }

@@ -1,6 +1,7 @@
 package com.mycompany.ecommerce.services;
 
 import com.mycompany.ecommerce.dtos.AvaliarProdutoResponseDTO;
+import com.mycompany.ecommerce.exceptions.AvaliacaoExistenteException;
 import com.mycompany.ecommerce.exceptions.OutOfRangeException;
 import com.mycompany.ecommerce.exceptions.ProdutoNotFound;
 import com.mycompany.ecommerce.exceptions.UsuarioNotFound;
@@ -39,6 +40,10 @@ public class AvaliacaoService {
         }
     }
 
+    public boolean verificarExistenciaDeAvaliacao(String doc, Long produtoId){
+        return avaliacaoRepository.existsByProdutoAndUserDoc(doc, produtoId);
+    }
+
     public AvaliarProdutoResponseDTO criarAvaliacao(Long produtoId, String doc, Integer nota) {
 
         validarNota(nota);
@@ -53,6 +58,13 @@ public class AvaliacaoService {
         if (produto == null) {
             throw new ProdutoNotFound("Produto não encontrado");
         }
+
+        boolean avaliacaoExiste = this.verificarExistenciaDeAvaliacao(usuario.getDoc(), produto.getId());
+
+        if(avaliacaoExiste){
+            throw new AvaliacaoExistenteException("Usuario com avaliação ja registrada para produto: "+ produto.getNome());
+        }
+
         Long idAvaliacao = this.inserirAvaliacaoReturningId(
                 produto.getId(), usuario.getDoc(), nota
         );

@@ -46,16 +46,6 @@ public class ProdutoController {
     CustomProdutoRepository customProdutoRepository;
 
 
-    @GetMapping("/produto/{id}")
-    public ResponseEntity<?> buscarProduto(@PathVariable(value = "id") Long id){
-        try{
-            Produto produto = produtoRepository.findByIdProduto(id);
-            return ResponseEntity.ok().body(produto);
-        }catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
     @PostMapping("/auth/cadastrar-produto")
     public ResponseEntity<?> cadastrarProduto(@RequestBody CadastrarProdutoRequestDTO produto){
 
@@ -66,6 +56,36 @@ public class ProdutoController {
             return ResponseEntity.ok(novoProduto);
 
         } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/auth/atualizar-produto/{id}")
+    public ResponseEntity<?> atualizarProduto(@PathVariable(value = "id") Long id,
+                                              @RequestBody Produto requestDTO){
+
+
+        try{
+            Produto produto = produtoRepository.findByIdProduto(id);
+
+            produtoService.atualizarProduto(
+                    produto.getId(),
+                    requestDTO
+            );
+
+            return ResponseEntity.ok().body(produto);
+        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/produto/{id}")
+    public ResponseEntity<?> buscarProduto(@PathVariable(value = "id") Long id){
+        try{
+            Produto produto = produtoRepository.findByIdProduto(id);
+            return ResponseEntity.ok().body(produto);
+        }catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -95,26 +115,6 @@ public class ProdutoController {
         return ResponseEntity.ok(produtos);
     }
 
-    @PostMapping("/auth/atualizar-produto/{id}")
-    public ResponseEntity<?> atualizarProduto(@PathVariable(value = "id") Long id,
-                                                    @RequestBody Produto requestDTO){
-
-
-        try{
-            Produto produto = produtoRepository.findByIdProduto(id);
-
-            produtoService.atualizarProduto(
-                    produto.getId(),
-                    requestDTO
-            );
-
-            return ResponseEntity.ok().body(produto);
-        }
-        catch (Exception e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
     @GetMapping("/buscar-produto-por-termo/{termo}")
     public List<FiltrarProdutoResponseDTO> buscarProdutoPorTermo(@PathVariable(value = "termo") String termo){
 
@@ -139,8 +139,14 @@ public class ProdutoController {
         Date dataConvertidaF = Date.from(localDateF.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
         List<Map<String, Object>> produtos = produtoRepository.findMostSelledByDate(dataConvertidaI, dataConvertidaF);
-
         return ResponseEntity.ok().body(produtos);
+    }
+
+    @GetMapping("/produtos-mais-avaliados")
+    public ResponseEntity<?> produtosMaisAvaliados(){
+        List<Map<String, Object>> produtos = produtoRepository.findMostPopulars();
+        return ResponseEntity.ok().body(produtos);
+
     }
 
 }

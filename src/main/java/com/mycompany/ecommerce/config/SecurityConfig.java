@@ -48,7 +48,8 @@ public class SecurityConfig {
                 auth.requestMatchers("/api/auth/**").hasAuthority("ADMIN");
                 auth.requestMatchers("/api/compra/**", "/api/avaliacao/**").hasAuthority("DEFAULT");
                 auth.anyRequest().permitAll();
-                });
+                })
+                .logout((logout) -> logout.logoutSuccessUrl("/login?logout"));
         http.addFilterBefore(authFilterToken(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
