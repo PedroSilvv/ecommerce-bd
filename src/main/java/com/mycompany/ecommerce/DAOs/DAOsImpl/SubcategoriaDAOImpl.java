@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 @Repository
 public class SubcategoriaDAOImpl implements SubcategoriaDAO {
@@ -44,15 +45,23 @@ public class SubcategoriaDAOImpl implements SubcategoriaDAO {
         return subcategoria;
     }
 
+
+    // crud
+
     @Override
-    public SubcategoriaJdbc buscarPorId(Long id) throws Exception {
+    public void inserir(Object... params) throws Exception {
+
+    }
+
+    @Override
+    public SubcategoriaJdbc buscarPorId(Object id) throws Exception {
         String sql = "SELECT * FROM subcategoria WHERE id = ?";
         SubcategoriaJdbc subcategoria = null;
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setLong(1, id);
+            stmt.setLong(1, (Long) id);
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
@@ -65,6 +74,24 @@ public class SubcategoriaDAOImpl implements SubcategoriaDAO {
 
         return subcategoria;
     }
+
+    @Override
+    public List<SubcategoriaJdbc> buscarTodos() throws Exception {
+        return List.of();
+    }
+
+    @Override
+    public void atualizar(SubcategoriaJdbc subcategoriaJdbc, Object id) throws Exception {
+
+    }
+
+    @Override
+    public void delete(Long id) throws Exception {
+
+    }
+
+
+    // map row
 
     private SubcategoriaJdbc mapRowToSubcategoria(ResultSet rs) throws SQLException {
         SubcategoriaJdbc subcategoria = new SubcategoriaJdbc();

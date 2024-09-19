@@ -22,8 +22,10 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     }
 
 
+    //crud
+
     @Override
-    public List<UsuarioJdbc> buscarTodosUsuarios() throws Exception {
+    public List<UsuarioJdbc> buscarTodos() throws Exception {
         String sql = "SELECT * FROM usuario";
         List<UsuarioJdbc> usuarios = new ArrayList<>();
 
@@ -44,14 +46,14 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     }
 
     @Override
-    public UsuarioJdbc buscarPorId(String doc) {
+    public UsuarioJdbc buscarPorId(Object doc) {
         String sql = "SELECT * FROM usuario WHERE doc = ?";
         UsuarioJdbc usuario = null;
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, doc);
+            stmt.setString(1, (String) doc);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -65,7 +67,13 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     }
 
     @Override
-    public void inserirUsuario(String doc, String nome, String role, String password) {
+    public void inserir(Object...params) {
+
+        String doc = (String) params[0];
+        String nome = (String) params[1];
+        String role = (String) params[2];
+        String password = (String) params[3];
+
         String sql = "INSERT INTO usuario (doc, nome, user_role, password) VALUES (?, ?, ?, ?)";
 
         try (Connection conn = dataSource.getConnection();
@@ -85,6 +93,19 @@ public class UsuarioDAOImpl implements UsuarioDAO {
             System.err.println("Erro ao inserir o usuário: " + e.getMessage());
         }
     }
+
+    @Override
+    public void atualizar(UsuarioJdbc usuarioJdbc, Object id) throws Exception {
+
+    }
+
+    @Override
+    public void delete(Long id) throws Exception {
+
+    }
+
+
+    //map row
 
     private UsuarioJdbc mapRowToUsuario(ResultSet rs) throws SQLException {
         UsuarioJdbc usuario = new UsuarioJdbc();

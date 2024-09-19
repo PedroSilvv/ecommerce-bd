@@ -21,10 +21,16 @@ public class CompraProdutoDAOImpl implements CompraProdutoDAO {
         this.dataSource = dataSource;
     }
 
+    // crud
 
     @Override
-    public void inserirCompraProduto(String compraId, Long produtoId, Integer quantidadeItem, BigDecimal precoTotalItem) throws Exception {
-        System.out.println("CompraProdutoDAOImpl.inserirCompraProduto");
+    public void inserir(Object... params) throws Exception {
+
+        String compraNotaFiscal = (String) params[0];
+        Long produtoId = (Long) params[1];
+        Integer quantidadeItem = (Integer) params[2];
+        BigDecimal precoTotalItem = (BigDecimal) params[3];
+
         String sql =
                 "INSERT INTO compra_item (compra_nota_fiscal, produto_id, quantidade_item, preco_total_item)" +
                 " VALUES (?, ?, ?, ?)";
@@ -32,7 +38,7 @@ public class CompraProdutoDAOImpl implements CompraProdutoDAO {
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            stmt.setString(1, compraId);
+            stmt.setString(1, compraNotaFiscal);
             stmt.setLong(2, produtoId);
             stmt.setInt(3, quantidadeItem);
             stmt.setBigDecimal(4, precoTotalItem);
@@ -48,6 +54,29 @@ public class CompraProdutoDAOImpl implements CompraProdutoDAO {
             throw new Exception("Erro ao inserir CompraProduto: " + e.getMessage(), e);
         }
     }
+
+    @Override
+    public CompraProdutoJdbc buscarPorId(Object id) throws Exception {
+        return null;
+    }
+
+    @Override
+    public List<CompraProdutoJdbc> buscarTodos() throws Exception {
+        return List.of();
+    }
+
+    @Override
+    public void atualizar(CompraProdutoJdbc compraProdutoJdbc, Object id) throws Exception {
+
+    }
+
+    @Override
+    public void delete(Long id) throws Exception {
+
+    }
+
+
+    //operacoes
 
     @Override
     public List<CompraProdutoJdbc> buscarPorCompra(String compraNotaFiscal) throws Exception {
@@ -74,6 +103,8 @@ public class CompraProdutoDAOImpl implements CompraProdutoDAO {
     }
 
 
+
+    //map row
 
     private CompraProdutoJdbc mapRowToCompraProduto(ResultSet rs) throws SQLException {
         CompraProdutoJdbc compraProduto = new CompraProdutoJdbc();

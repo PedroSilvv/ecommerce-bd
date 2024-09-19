@@ -4,10 +4,12 @@ import com.mycompany.ecommerce.DAOs.DAOS.AvaliacaoDAO;
 import com.mycompany.ecommerce.jdbcModels.AvaliacaoJdbc;
 import com.mycompany.ecommerce.jdbcModels.CategoriaJdbc;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.objenesis.ObjenesisHelper;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.List;
 
 @Repository
 public class AvaliacaoDAOImpl implements AvaliacaoDAO {
@@ -19,11 +21,40 @@ public class AvaliacaoDAOImpl implements AvaliacaoDAO {
         this.dataSource = dataSource;
     }
 
+    //crud
+
     @Override
-    public void inserirAvaliacao(Long produtoId, String usuarioDoc, Integer nota) throws Exception {
+    public AvaliacaoJdbc buscarPorId(Object id) throws Exception {
+
+        String sql = "SELECT * FROM avaliacao WHERE id = ?";
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setLong(1, (Long) id);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return mapRowToAvaliacao(rs);
+                } else {
+                    throw new SQLException("Avaliação não encontrada.");
+                }
+            }
+        } catch (SQLException e) {
+            throw new Exception("Erro ao buscar avaliação: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void inserir(Object... params) throws Exception {
+
+        Long produtoId = (Long) params[0];
+        String usuarioDoc = (String) params[1];
+        Integer nota = (Integer) params[2];
+
         String sql =
                 "INSERT INTO avaliacao (produto_id, usuario_doc, nota) " +
-                "VALUES (?, ?, ?)";
+                        "VALUES (?, ?, ?)";
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -43,27 +74,24 @@ public class AvaliacaoDAOImpl implements AvaliacaoDAO {
         }
     }
 
+
     @Override
-    public AvaliacaoJdbc buscarPorId(Long id) throws Exception {
-        String sql =
-                "SELECT * FROM avaliacao WHERE id = ?";
-
-        try (Connection conn = dataSource.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setLong(1, id);
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return mapRowToAvaliacao(rs);
-                } else {
-                    throw new SQLException("Avaliação não encontrada.");
-                }
-            }
-        } catch (SQLException e) {
-            throw new Exception("Erro ao buscar avaliação: " + e.getMessage(), e);
-        }
+    public List<AvaliacaoJdbc> buscarTodos() throws Exception {
+        return List.of();
     }
+
+    @Override
+    public void atualizar(AvaliacaoJdbc avaliacaoJdbc, Object id) throws Exception {
+
+    }
+
+    @Override
+    public void delete(Long id) throws Exception {
+
+    }
+
+
+    // operacoes
 
     @Override
     public boolean existsByProdutoAndUserDoc(String usuarioDoc, Long produtoId) throws Exception {
@@ -89,6 +117,8 @@ public class AvaliacaoDAOImpl implements AvaliacaoDAO {
         }
     }
 
+
+    // map row
 
     private AvaliacaoJdbc mapRowToAvaliacao(ResultSet rs) throws SQLException {
         AvaliacaoJdbc avaliacao = new AvaliacaoJdbc();

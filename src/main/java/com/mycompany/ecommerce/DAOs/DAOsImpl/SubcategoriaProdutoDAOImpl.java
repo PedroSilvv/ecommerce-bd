@@ -2,6 +2,7 @@ package com.mycompany.ecommerce.DAOs.DAOsImpl;
 
 import com.mycompany.ecommerce.DAOs.DAOS.SubcategoriaProdutoDAO;
 import com.mycompany.ecommerce.jdbcModels.SubcategoriaProdutoJdbc;
+import com.mycompany.ecommerce.models.SubcategoriaProduto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -20,15 +21,21 @@ public class SubcategoriaProdutoDAOImpl implements SubcategoriaProdutoDAO {
         this.dataSource = dataSource;
     }
 
+    // crud
+
+
     @Override
-    public void inserirSubcategoriaProduto(SubcategoriaProdutoJdbc subcategoriaProdutoJdbc) throws Exception {
+    public void inserir(Object... params) throws Exception {
+
+        SubcategoriaProdutoJdbc subcategoriaProduto = (SubcategoriaProdutoJdbc) params[0];
+
         String sql = "INSERT INTO subcategoria_produto (subcategoria_id, produto_id) VALUES (?, ?)";
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            stmt.setLong(1, subcategoriaProdutoJdbc.getSubcategoriaId());
-            stmt.setLong(2, subcategoriaProdutoJdbc.getProdutoId());
+            stmt.setLong(1, subcategoriaProduto.getSubcategoriaId());
+            stmt.setLong(2, subcategoriaProduto.getProdutoId());
 
             int affectedRows = stmt.executeUpdate();
 
@@ -38,7 +45,7 @@ public class SubcategoriaProdutoDAOImpl implements SubcategoriaProdutoDAO {
 
             try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
-                    subcategoriaProdutoJdbc.setId(generatedKeys.getLong(1));
+                    subcategoriaProduto.setId(generatedKeys.getLong(1));
                 } else {
                     throw new SQLException("Erro ao inserir subcategoria produto");
                 }
@@ -48,6 +55,29 @@ public class SubcategoriaProdutoDAOImpl implements SubcategoriaProdutoDAO {
             throw new Exception("Erro ao inserir produto: " + e.getMessage(), e);
         }
     }
+
+    @Override
+    public SubcategoriaProdutoJdbc buscarPorId(Object id) throws Exception {
+        return null;
+    }
+
+    @Override
+    public List<SubcategoriaProdutoJdbc> buscarTodos() throws Exception {
+        return List.of();
+    }
+
+    @Override
+    public void atualizar(SubcategoriaProdutoJdbc subcategoriaProdutoJdbc, Object id) throws Exception {
+
+    }
+
+    @Override
+    public void delete(Long id) throws Exception {
+
+    }
+
+
+    //operacoes
 
     @Override
     public List<SubcategoriaProdutoJdbc> buscarPorProduto(Long produtoId) throws Exception {
@@ -74,6 +104,8 @@ public class SubcategoriaProdutoDAOImpl implements SubcategoriaProdutoDAO {
     }
 
 
+
+    //map row
 
     private SubcategoriaProdutoJdbc mapRowToSubcategoriaProduto(ResultSet rs) throws SQLException {
         SubcategoriaProdutoJdbc subcategoriaProduto = new SubcategoriaProdutoJdbc();
