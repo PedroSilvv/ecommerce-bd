@@ -1,7 +1,7 @@
 package com.mycompany.ecommerce.DAOs.DAOsImpl;
 
 import com.mycompany.ecommerce.DAOs.DAOS.ProdutoDAO;
-import com.mycompany.ecommerce.jdbcModels.ProdutoJdbc;
+import com.mycompany.ecommerce.models.Produto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -27,16 +27,16 @@ public class ProdutoDAOImpl implements ProdutoDAO {
     // crud
 
     @Override
-    public List<ProdutoJdbc> buscarTodos() throws Exception {
+    public List<Produto> buscarTodos() throws Exception {
         String sql = "SELECT * FROM produto";
-        List<ProdutoJdbc> produtos = new ArrayList<>();
+        List<Produto> produtos = new ArrayList<>();
 
         try (Connection conn = dataSource.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                ProdutoJdbc produto = mapRowToProduto(rs);
+                Produto produto = mapRowToProduto(rs);
                 produtos.add(produto);
             }
 
@@ -48,10 +48,10 @@ public class ProdutoDAOImpl implements ProdutoDAO {
     }
 
     @Override
-    public ProdutoJdbc buscarPorId(Object id) throws Exception {
+    public Produto buscarPorId(Object id) throws Exception {
 
         String sql = "SELECT * FROM produto WHERE id = ?";
-        ProdutoJdbc produto = null;
+        Produto produto = null;
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -73,7 +73,7 @@ public class ProdutoDAOImpl implements ProdutoDAO {
     @Override
     public void inserir(Object... params) throws Exception {
 
-        ProdutoJdbc produto = (ProdutoJdbc) params[0];
+        Produto produto = (Produto) params[0];
 
         String sql =
                 "INSERT INTO produto (categoria_id, nome, descricao, quantidade, preco) " +
@@ -108,7 +108,7 @@ public class ProdutoDAOImpl implements ProdutoDAO {
     }
 
     @Override
-    public void atualizar(ProdutoJdbc produto, Object id) throws Exception {
+    public void atualizar(Produto produto, Object id) throws Exception {
         String sql = "UPDATE produto SET nome = ?, descricao = ?, quantidade = ?, preco = ?  WHERE id = ?";
 
         try (Connection conn = dataSource.getConnection();
@@ -199,9 +199,9 @@ public class ProdutoDAOImpl implements ProdutoDAO {
     }
 
     @Override
-    public List<ProdutoJdbc> buscarPorCategoria(Long id) throws Exception {
+    public List<Produto> buscarPorCategoria(Long id) throws Exception {
         String sql = "SELECT * FROM produto WHERE categoria_id = ?";
-        List<ProdutoJdbc> produtos = new ArrayList<>();
+        List<Produto> produtos = new ArrayList<>();
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -210,7 +210,7 @@ public class ProdutoDAOImpl implements ProdutoDAO {
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    ProdutoJdbc produto = mapRowToProduto(rs);
+                    Produto produto = mapRowToProduto(rs);
                     produtos.add(produto);
                 }
             }
@@ -316,8 +316,8 @@ public class ProdutoDAOImpl implements ProdutoDAO {
 
     //Map row
 
-    private ProdutoJdbc mapRowToProduto(ResultSet rs) throws SQLException {
-        ProdutoJdbc produto = new ProdutoJdbc();
+    private Produto mapRowToProduto(ResultSet rs) throws SQLException {
+        Produto produto = new Produto();
         produto.setId(rs.getLong("id"));
         produto.setCategoriaId(rs.getLong("categoria_id"));
         produto.setNome(rs.getString("nome"));

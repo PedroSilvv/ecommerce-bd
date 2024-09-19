@@ -1,8 +1,7 @@
 package com.mycompany.ecommerce.DAOs.DAOsImpl;
 
 import com.mycompany.ecommerce.DAOs.DAOS.UsuarioDAO;
-import com.mycompany.ecommerce.jdbcModels.ProdutoJdbc;
-import com.mycompany.ecommerce.jdbcModels.UsuarioJdbc;
+import com.mycompany.ecommerce.models.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -25,16 +24,16 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     //crud
 
     @Override
-    public List<UsuarioJdbc> buscarTodos() throws Exception {
+    public List<Usuario> buscarTodos() throws Exception {
         String sql = "SELECT * FROM usuario";
-        List<UsuarioJdbc> usuarios = new ArrayList<>();
+        List<Usuario> usuarios = new ArrayList<>();
 
         try (Connection conn = dataSource.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
-                UsuarioJdbc usuario = mapRowToUsuario(rs);
+                Usuario usuario = mapRowToUsuario(rs);
                 usuarios.add(usuario);
             }
 
@@ -46,9 +45,9 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     }
 
     @Override
-    public UsuarioJdbc buscarPorId(Object doc) {
+    public Usuario buscarPorId(Object doc) {
         String sql = "SELECT * FROM usuario WHERE doc = ?";
-        UsuarioJdbc usuario = null;
+        Usuario usuario = null;
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -95,7 +94,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     }
 
     @Override
-    public void atualizar(UsuarioJdbc usuarioJdbc, Object id) throws Exception {
+    public void atualizar(Usuario usuario, Object id) throws Exception {
 
     }
 
@@ -107,8 +106,8 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 
     //map row
 
-    private UsuarioJdbc mapRowToUsuario(ResultSet rs) throws SQLException {
-        UsuarioJdbc usuario = new UsuarioJdbc();
+    private Usuario mapRowToUsuario(ResultSet rs) throws SQLException {
+        Usuario usuario = new Usuario();
 
         usuario.setDoc(rs.getString("doc"));
         usuario.setNome(rs.getString("nome"));

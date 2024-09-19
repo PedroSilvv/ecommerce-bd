@@ -2,14 +2,14 @@ package com.mycompany.ecommerce.DAOs.DAOS;
 
 
 import com.mycompany.ecommerce.DAOs.generic.GenericDAO;
-import com.mycompany.ecommerce.jdbcModels.ProdutoJdbc;
+import com.mycompany.ecommerce.models.Produto;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 
-public interface ProdutoDAO extends GenericDAO<ProdutoJdbc> {
+public interface ProdutoDAO extends GenericDAO<Produto> {
 
     //CRUD
 //    void inserirProduto(ProdutoJdbc produto) throws Exception;
@@ -19,7 +19,7 @@ public interface ProdutoDAO extends GenericDAO<ProdutoJdbc> {
 //    List<ProdutoJdbc> buscarTodos() throws Exception;
 
     //Operações
-    List<ProdutoJdbc> buscarPorCategoria(Long categoria) throws Exception;
+    List<Produto> buscarPorCategoria(Long categoria) throws Exception;
     void atualizarQuantidade(Integer novaQuantidade, Long id) throws Exception;
     void atualizarQuantidadeDeVendas(Integer novaQuantidade, Long id) throws Exception;
 

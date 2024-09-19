@@ -1,7 +1,7 @@
 package com.mycompany.ecommerce.DAOs.DAOsImpl;
 
 import com.mycompany.ecommerce.DAOs.DAOS.CompraProdutoDAO;
-import com.mycompany.ecommerce.jdbcModels.CompraProdutoJdbc;
+import com.mycompany.ecommerce.models.CompraProduto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -56,17 +56,17 @@ public class CompraProdutoDAOImpl implements CompraProdutoDAO {
     }
 
     @Override
-    public CompraProdutoJdbc buscarPorId(Object id) throws Exception {
+    public CompraProduto buscarPorId(Object id) throws Exception {
         return null;
     }
 
     @Override
-    public List<CompraProdutoJdbc> buscarTodos() throws Exception {
+    public List<CompraProduto> buscarTodos() throws Exception {
         return List.of();
     }
 
     @Override
-    public void atualizar(CompraProdutoJdbc compraProdutoJdbc, Object id) throws Exception {
+    public void atualizar(CompraProduto compraProduto, Object id) throws Exception {
 
     }
 
@@ -79,9 +79,9 @@ public class CompraProdutoDAOImpl implements CompraProdutoDAO {
     //operacoes
 
     @Override
-    public List<CompraProdutoJdbc> buscarPorCompra(String compraNotaFiscal) throws Exception {
+    public List<CompraProduto> buscarPorCompra(String compraNotaFiscal) throws Exception {
         String sql = "SELECT * FROM compra_item WHERE compra_nota_fiscal = ?";
-        List<CompraProdutoJdbc> compraProdutoJdbcs = new ArrayList<>();
+        List<CompraProduto> compraProdutos = new ArrayList<>();
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -91,23 +91,23 @@ public class CompraProdutoDAOImpl implements CompraProdutoDAO {
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    CompraProdutoJdbc compraProduto = mapRowToCompraProduto(rs);
-                    compraProdutoJdbcs.add(compraProduto);
+                    CompraProduto compraProduto = mapRowToCompraProduto(rs);
+                    compraProdutos.add(compraProduto);
                 }
             }
 
         } catch (SQLException e) {
             throw new Exception("Erro ao buscar compra_itens: " + e.getMessage(), e);
         }
-        return compraProdutoJdbcs;
+        return compraProdutos;
     }
 
 
 
     //map row
 
-    private CompraProdutoJdbc mapRowToCompraProduto(ResultSet rs) throws SQLException {
-        CompraProdutoJdbc compraProduto = new CompraProdutoJdbc();
+    private CompraProduto mapRowToCompraProduto(ResultSet rs) throws SQLException {
+        CompraProduto compraProduto = new CompraProduto();
         compraProduto.setId(rs.getLong("id"));
         compraProduto.setCompraNotaFiscal(rs.getString("compra_nota_fiscal"));
         compraProduto.setProdutoId(rs.getLong("produto_id"));

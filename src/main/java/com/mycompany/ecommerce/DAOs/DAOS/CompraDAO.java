@@ -1,15 +1,14 @@
 package com.mycompany.ecommerce.DAOs.DAOS;
 
 import com.mycompany.ecommerce.DAOs.generic.GenericDAO;
-import com.mycompany.ecommerce.jdbcModels.CompraJdbc;
+import com.mycompany.ecommerce.models.Compra;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 
-public interface CompraDAO extends GenericDAO<CompraJdbc> {
+public interface CompraDAO extends GenericDAO<Compra> {
 
-    List<CompraJdbc> buscarPorUsuario(String usuarioDoc) throws Exception;
+    List<Compra> buscarPorUsuario(String usuarioDoc) throws Exception;
 
 //    void inserirCompra(
 //            String nota_fiscal,

@@ -1,7 +1,7 @@
 package com.mycompany.ecommerce.DAOs.DAOsImpl;
 
 import com.mycompany.ecommerce.DAOs.DAOS.SubcategoriaDAO;
-import com.mycompany.ecommerce.jdbcModels.SubcategoriaJdbc;
+import com.mycompany.ecommerce.models.Subcategoria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -23,10 +23,10 @@ public class SubcategoriaDAOImpl implements SubcategoriaDAO {
     }
 
     @Override
-    public SubcategoriaJdbc buscarPorNome(String nome) throws Exception {
+    public Subcategoria buscarPorNome(String nome) throws Exception {
 
         String sql = "SELECT * FROM subcategoria WHERE nome = ?";
-        SubcategoriaJdbc subcategoria = null;
+        Subcategoria subcategoria = null;
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -54,9 +54,9 @@ public class SubcategoriaDAOImpl implements SubcategoriaDAO {
     }
 
     @Override
-    public SubcategoriaJdbc buscarPorId(Object id) throws Exception {
+    public Subcategoria buscarPorId(Object id) throws Exception {
         String sql = "SELECT * FROM subcategoria WHERE id = ?";
-        SubcategoriaJdbc subcategoria = null;
+        Subcategoria subcategoria = null;
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -76,12 +76,12 @@ public class SubcategoriaDAOImpl implements SubcategoriaDAO {
     }
 
     @Override
-    public List<SubcategoriaJdbc> buscarTodos() throws Exception {
+    public List<Subcategoria> buscarTodos() throws Exception {
         return List.of();
     }
 
     @Override
-    public void atualizar(SubcategoriaJdbc subcategoriaJdbc, Object id) throws Exception {
+    public void atualizar(Subcategoria subcategoria, Object id) throws Exception {
 
     }
 
@@ -93,8 +93,8 @@ public class SubcategoriaDAOImpl implements SubcategoriaDAO {
 
     // map row
 
-    private SubcategoriaJdbc mapRowToSubcategoria(ResultSet rs) throws SQLException {
-        SubcategoriaJdbc subcategoria = new SubcategoriaJdbc();
+    private Subcategoria mapRowToSubcategoria(ResultSet rs) throws SQLException {
+        Subcategoria subcategoria = new Subcategoria();
         subcategoria.setId(rs.getLong("id"));
         subcategoria.setNome(rs.getString("nome"));
         subcategoria.setCategoriaId(rs.getLong("categoria_principal_id"));

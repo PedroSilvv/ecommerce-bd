@@ -1,30 +1,16 @@
 package com.mycompany.ecommerce.models;
 
-import jakarta.persistence.*;
-
-import java.io.Serial;
 import java.io.Serializable;
 
-@Entity
-@Table(name = "subcategoria_produto")
 public class SubcategoriaProduto implements Serializable {
 
-    @Serial
-    private static final long serialVersionUID= 1L;
+    private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
+    private Long subcategoriaId; // Referência para a tabela Subcategoria
+    private Long produtoId;      // Referência para a tabela Produto
 
-    @ManyToOne
-    @JoinColumn(name = "subcategoria_id", nullable = false)
-    private Subcategoria subcategoria;
-
-    @ManyToOne
-    @JoinColumn(name = "produto_id", nullable = false)
-    private Produto produto;
-
+    // Getter e Setter para id
     public Long getId() {
         return id;
     }
@@ -33,19 +19,21 @@ public class SubcategoriaProduto implements Serializable {
         this.id = id;
     }
 
-    public Subcategoria getSubcategoria() {
-        return subcategoria;
+    // Getter e Setter para subcategoriaId
+    public Long getSubcategoriaId() {
+        return subcategoriaId;
     }
 
-    public void setSubcategoria(Subcategoria subcategoria) {
-        this.subcategoria = subcategoria;
+    public void setSubcategoriaId(Long subcategoriaId) {
+        this.subcategoriaId = subcategoriaId;
     }
 
-    public Produto getProduto() {
-        return produto;
+    // Getter e Setter para produtoId
+    public Long getProdutoId() {
+        return produtoId;
     }
 
-    public void setProduto(Produto produto) {
-        this.produto = produto;
+    public void setProdutoId(Long produtoId) {
+        this.produtoId = produtoId;
     }
 }

@@ -190,6 +190,7 @@ from produto p
 WHERE exists ( SELECT 1 FROM avaliacao a2 WHERE a2.produto_id = p.id)
 order by media asc;
 
+SELECT id, nome, quantidade_vendas FROM produto WHERE quantidade_vendas > 0 ORDER BY quantidade_vendas desc
 
 
 

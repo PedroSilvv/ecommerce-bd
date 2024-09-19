@@ -1,11 +1,11 @@
 package com.mycompany.ecommerce.DAOs.DAOS;
 
 import com.mycompany.ecommerce.DAOs.generic.GenericDAO;
-import com.mycompany.ecommerce.jdbcModels.SubcategoriaJdbc;
+import com.mycompany.ecommerce.models.Subcategoria;
 
-public interface SubcategoriaDAO extends GenericDAO<SubcategoriaJdbc> {
+public interface SubcategoriaDAO extends GenericDAO<Subcategoria> {
 
-    SubcategoriaJdbc buscarPorNome(String nome) throws Exception;
+    Subcategoria buscarPorNome(String nome) throws Exception;
 
 //    SubcategoriaJdbc buscarPorId(Long id) throws Exception;
 }

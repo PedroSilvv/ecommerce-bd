@@ -1,10 +1,8 @@
 package com.mycompany.ecommerce.DAOs.DAOsImpl;
 
 import com.mycompany.ecommerce.DAOs.DAOS.AvaliacaoDAO;
-import com.mycompany.ecommerce.jdbcModels.AvaliacaoJdbc;
-import com.mycompany.ecommerce.jdbcModels.CategoriaJdbc;
+import com.mycompany.ecommerce.models.Avaliacao;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.objenesis.ObjenesisHelper;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -24,7 +22,7 @@ public class AvaliacaoDAOImpl implements AvaliacaoDAO {
     //crud
 
     @Override
-    public AvaliacaoJdbc buscarPorId(Object id) throws Exception {
+    public Avaliacao buscarPorId(Object id) throws Exception {
 
         String sql = "SELECT * FROM avaliacao WHERE id = ?";
 
@@ -76,12 +74,12 @@ public class AvaliacaoDAOImpl implements AvaliacaoDAO {
 
 
     @Override
-    public List<AvaliacaoJdbc> buscarTodos() throws Exception {
+    public List<Avaliacao> buscarTodos() throws Exception {
         return List.of();
     }
 
     @Override
-    public void atualizar(AvaliacaoJdbc avaliacaoJdbc, Object id) throws Exception {
+    public void atualizar(Avaliacao avaliacao, Object id) throws Exception {
 
     }
 
@@ -120,8 +118,8 @@ public class AvaliacaoDAOImpl implements AvaliacaoDAO {
 
     // map row
 
-    private AvaliacaoJdbc mapRowToAvaliacao(ResultSet rs) throws SQLException {
-        AvaliacaoJdbc avaliacao = new AvaliacaoJdbc();
+    private Avaliacao mapRowToAvaliacao(ResultSet rs) throws SQLException {
+        Avaliacao avaliacao = new Avaliacao();
 
         avaliacao.setId(rs.getLong("id"));
         avaliacao.setProdutoId(rs.getLong("produto_id"));

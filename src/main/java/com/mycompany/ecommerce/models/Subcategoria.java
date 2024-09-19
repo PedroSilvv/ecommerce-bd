@@ -1,28 +1,16 @@
 package com.mycompany.ecommerce.models;
 
-import jakarta.persistence.*;
+import java.io.Serializable;
 
-import java.io.Serial;
+public class Subcategoria implements Serializable {
 
-@Entity
-@Table(name = "subcategoria")
-public class Subcategoria {
+    private static final long serialVersionUID = 1L;
 
-    @Serial
-    private static final long serialVersionUID= 1L;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
-
-    @Column(name = "nome", nullable = false, unique = true)
     private String nome;
+    private Long categoriaId; // Usado para o relacionamento com Categoria
 
-    @ManyToOne
-    @JoinColumn(name = "categoria_principal_id", nullable = false)
-    private Categoria categoria;
-
+    // Getter e Setter para id
     public Long getId() {
         return id;
     }
@@ -31,6 +19,7 @@ public class Subcategoria {
         this.id = id;
     }
 
+    // Getter e Setter para nome
     public String getNome() {
         return nome;
     }
@@ -39,11 +28,12 @@ public class Subcategoria {
         this.nome = nome;
     }
 
-    public Categoria getCategoria() {
-        return categoria;
+    // Getter e Setter para categoriaId
+    public Long getCategoriaId() {
+        return categoriaId;
     }
 
-    public void setCategoria(Categoria categoria) {
-        this.categoria = categoria;
+    public void setCategoriaId(Long categoriaId) {
+        this.categoriaId = categoriaId;
     }
 }

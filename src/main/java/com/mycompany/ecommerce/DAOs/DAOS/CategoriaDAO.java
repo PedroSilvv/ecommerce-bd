@@ -1,10 +1,10 @@
 package com.mycompany.ecommerce.DAOs.DAOS;
 
 import com.mycompany.ecommerce.DAOs.generic.GenericDAO;
-import com.mycompany.ecommerce.jdbcModels.CategoriaJdbc;
+import com.mycompany.ecommerce.models.Categoria;
 
 
-public interface CategoriaDAO extends GenericDAO<CategoriaJdbc> {
+public interface CategoriaDAO extends GenericDAO<Categoria> {
 
 //    CategoriaJdbc buscarPorId(Long id) throws Exception;
 

@@ -1,8 +1,7 @@
 package com.mycompany.ecommerce.DAOs.DAOsImpl;
 
 import com.mycompany.ecommerce.DAOs.DAOS.CompraDAO;
-import com.mycompany.ecommerce.jdbcModels.CompraJdbc;
-import com.mycompany.ecommerce.jdbcModels.ProdutoJdbc;
+import com.mycompany.ecommerce.models.Compra;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -27,16 +26,16 @@ public class CompraDAOImpl implements CompraDAO {
     //crud
 
     @Override
-    public List<CompraJdbc> buscarTodos() throws Exception {
+    public List<Compra> buscarTodos() throws Exception {
         String sql = "SELECT * FROM compra";
-        List<CompraJdbc> compras = new ArrayList<>();
+        List<Compra> compras = new ArrayList<>();
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    CompraJdbc compra = mapRowToCompra(rs);
+                    Compra compra = mapRowToCompra(rs);
                     compras.add(compra);
                 }
             }
@@ -48,9 +47,9 @@ public class CompraDAOImpl implements CompraDAO {
     }
 
     @Override
-    public CompraJdbc buscarPorId(Object id) throws Exception {
+    public Compra buscarPorId(Object id) throws Exception {
         String sql = "SELECT * FROM compra WHERE nota_fiscal = ?";
-        CompraJdbc compra = null;
+        Compra compra = null;
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -103,7 +102,7 @@ public class CompraDAOImpl implements CompraDAO {
     }
 
     @Override
-    public void atualizar(CompraJdbc compraJdbc, Object id) throws Exception {
+    public void atualizar(Compra compra, Object id) throws Exception {
 
     }
 
@@ -116,9 +115,9 @@ public class CompraDAOImpl implements CompraDAO {
 
     //
     @Override
-    public List<CompraJdbc> buscarPorUsuario(String usuarioDoc) throws Exception {
+    public List<Compra> buscarPorUsuario(String usuarioDoc) throws Exception {
         String sql = "SELECT * FROM compra WHERE usuario_doc = ?";
-        List<CompraJdbc> compras = new ArrayList<>();
+        List<Compra> compras = new ArrayList<>();
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -127,7 +126,7 @@ public class CompraDAOImpl implements CompraDAO {
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    CompraJdbc compra = mapRowToCompra(rs);
+                    Compra compra = mapRowToCompra(rs);
                     compras.add(compra);
                 }
             }
@@ -164,8 +163,8 @@ public class CompraDAOImpl implements CompraDAO {
 
 
     //MAP ROW
-    private CompraJdbc mapRowToCompra(ResultSet rs) throws SQLException {
-        CompraJdbc compra = new CompraJdbc();
+    private Compra mapRowToCompra(ResultSet rs) throws SQLException {
+        Compra compra = new Compra();
         compra.setNotaFiscal(rs.getString("nota_fiscal"));
         compra.setUsuarioDoc(rs.getString("usuario_doc"));
         compra.setStatusJdbc(rs.getString("status_compra"));

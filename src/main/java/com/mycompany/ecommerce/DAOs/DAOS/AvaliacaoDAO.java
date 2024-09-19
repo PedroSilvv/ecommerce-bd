@@ -1,10 +1,10 @@
 package com.mycompany.ecommerce.DAOs.DAOS;
 
 import com.mycompany.ecommerce.DAOs.generic.GenericDAO;
-import com.mycompany.ecommerce.jdbcModels.AvaliacaoJdbc;
+import com.mycompany.ecommerce.models.Avaliacao;
 
 
-public interface AvaliacaoDAO extends GenericDAO<AvaliacaoJdbc>{
+public interface AvaliacaoDAO extends GenericDAO<Avaliacao>{
 
 //    void inserirAvaliacao(Long produtoId, String usuarioDoc, Integer nota) throws Exception;
 //

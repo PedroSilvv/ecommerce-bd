@@ -1,10 +1,9 @@
 package com.mycompany.ecommerce.DAOs.DAOsImpl;
 
 import com.mycompany.ecommerce.DAOs.DAOS.CategoriaDAO;
-import com.mycompany.ecommerce.jdbcModels.CategoriaJdbc;
+import com.mycompany.ecommerce.models.Categoria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.validation.ObjectError;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -26,14 +25,14 @@ public class CategoriaDAOImpl implements CategoriaDAO {
     //crud
 
     @Override
-    public List<CategoriaJdbc> buscarTodos() throws Exception {
+    public List<Categoria> buscarTodos() throws Exception {
         return List.of();
     }
 
     @Override
-    public CategoriaJdbc buscarPorId(Object id) throws Exception{
+    public Categoria buscarPorId(Object id) throws Exception{
         String sql = "SELECT * FROM categoria WHERE id = ?";
-        CategoriaJdbc categoria = null;
+        Categoria categoria = null;
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -58,7 +57,7 @@ public class CategoriaDAOImpl implements CategoriaDAO {
     }
 
     @Override
-    public void atualizar(CategoriaJdbc categoriaJdbc, Object id) throws Exception {
+    public void atualizar(Categoria categoria, Object id) throws Exception {
 
     }
 
@@ -71,8 +70,8 @@ public class CategoriaDAOImpl implements CategoriaDAO {
 
     //map row
 
-    private CategoriaJdbc mapRowToCategoria(ResultSet rs) throws SQLException {
-        CategoriaJdbc categoria = new CategoriaJdbc();
+    private Categoria mapRowToCategoria(ResultSet rs) throws SQLException {
+        Categoria categoria = new Categoria();
 
         categoria.setId(rs.getLong("id"));
         categoria.setNome(rs.getString("nome"));

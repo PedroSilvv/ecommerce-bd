@@ -1,45 +1,19 @@
 package com.mycompany.ecommerce.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.*;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-@Entity
-@Table(name = "compra_item")
 public class CompraProduto implements Serializable {
 
-    @Serial
-    private static final long serialVersionUID= 1L;
+    private static final long serialVersionUID = 1L;
 
     @JsonIgnore
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
-
-
-    @ManyToOne
-    @JoinColumn(name = "compra_nota_fiscal", nullable = false)
-    @JsonBackReference
-    @JsonIgnore
-    private Compra compra;
-
-    @ManyToOne
-    @JoinColumn(name = "produto_id", nullable = false)
-    @JsonProperty
-    private Produto produto;
-
-    @Column(name = "quantidade_item", nullable = false)
-    @JsonProperty
+    private String compraNotaFiscal;
+    private Long produtoId;
     private Integer quantidadeItem;
-
-    @Column(name = "preco_total_item")
-    @JsonProperty
     private BigDecimal precoTotalItem;
 
     public Long getId() {
@@ -50,20 +24,20 @@ public class CompraProduto implements Serializable {
         this.id = id;
     }
 
-    public Compra getCompra() {
-        return compra;
+    public String getCompraNotaFiscal() {
+        return compraNotaFiscal;
     }
 
-    public void setCompra(Compra compra) {
-        this.compra = compra;
+    public void setCompraNotaFiscal(String compraNotaFiscal) {
+        this.compraNotaFiscal = compraNotaFiscal;
     }
 
-    public Produto getProduto() {
-        return produto;
+    public Long getProdutoId() {
+        return produtoId;
     }
 
-    public void setProduto(Produto produto) {
-        this.produto = produto;
+    public void setProdutoId(Long produtoId) {
+        this.produtoId = produtoId;
     }
 
     public Integer getQuantidadeItem() {

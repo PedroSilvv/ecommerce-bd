@@ -1,53 +1,22 @@
 package com.mycompany.ecommerce.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
-import org.hibernate.annotations.CreationTimestamp;
-
-import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-@Entity
-@Table(name = "compra")
 public class Compra implements Serializable {
 
+    private static final long serialVersionUID = 1L;
 
-    @Id
-    @Column(name = "nota_fiscal")
     private String notaFiscal;
-
-    @ManyToOne
-    @JoinColumn(name = "usuario_doc", nullable = false)
-    private Usuario usuario;
-
-    @Column(name = "status_compra", nullable = false)
-    @Enumerated(EnumType.STRING)
+    private String usuarioDoc;
     private Status status;
-
-    @Column(name = "preco_total", nullable = false)
     private BigDecimal precoTotal;
-
-    @OneToMany(mappedBy = "compra", cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private Set<CompraProduto> compraProdutos = new HashSet<>();
-
-    @Column(name = "data_compra", nullable = false)
-    @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
     private Date dataCompra;
 
-    public Set<CompraProduto> getCompraProdutos() {
-        return compraProdutos;
-    }
-
-    public void setCompraProdutos(Set<CompraProduto> compraProdutos) {
-        this.compraProdutos = compraProdutos;
-    }
+    private Set<CompraProduto> compraProdutos = new HashSet<>();
 
     public String getNotaFiscal() {
         return notaFiscal;
@@ -57,12 +26,12 @@ public class Compra implements Serializable {
         this.notaFiscal = notaFiscal;
     }
 
-    public Usuario getUsuario() {
-        return usuario;
+    public String getUsuarioDoc() {
+        return usuarioDoc;
     }
 
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
+    public void setUsuarioDoc(String usuarioDoc) {
+        this.usuarioDoc = usuarioDoc;
     }
 
     public Status getStatus() {
@@ -71,6 +40,10 @@ public class Compra implements Serializable {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public void setStatusJdbc(String status){
+        this.status = Status.valueOf(status);
     }
 
     public BigDecimal getPrecoTotal() {
@@ -89,16 +62,23 @@ public class Compra implements Serializable {
         this.dataCompra = dataCompra;
     }
 
-    public enum Status{
-        PENDENTE, CANCELADA, CONCLUIDA
+    public Set<CompraProduto> getCompraProdutos() {
+        return compraProdutos;
     }
 
+    public void setCompraProdutos(Set<CompraProduto> compraProdutos) {
+        this.compraProdutos = compraProdutos;
+    }
+
+    public enum Status {
+        PENDENTE, CANCELADA, CONCLUIDA
+    }
 
     @Override
     public String toString() {
         return "Compra{" +
                 "notaFiscal='" + notaFiscal + '\'' +
-                ", usuario=" + usuario +
+                ", usuarioId=" + usuarioDoc +
                 ", status=" + status +
                 ", precoTotal=" + precoTotal +
                 ", compraProdutos=" + compraProdutos +
@@ -106,3 +86,4 @@ public class Compra implements Serializable {
                 '}';
     }
 }
+

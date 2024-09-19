@@ -1,13 +1,10 @@
 package com.mycompany.ecommerce.DAOs.DAOS;
 
 import com.mycompany.ecommerce.DAOs.generic.GenericDAO;
-import com.mycompany.ecommerce.jdbcModels.CompraProdutoJdbc;
 import com.mycompany.ecommerce.models.CompraProduto;
-
-import java.math.BigDecimal;
 import java.util.List;
 
-public interface CompraProdutoDAO extends GenericDAO<CompraProdutoJdbc> {
+public interface CompraProdutoDAO extends GenericDAO<CompraProduto> {
 
 //    void inserirCompraProduto(
 //           String compraId,
@@ -16,5 +13,5 @@ public interface CompraProdutoDAO extends GenericDAO<CompraProdutoJdbc> {
 //           BigDecimal precoTotalItem
 //    ) throws Exception;
 
-    List<CompraProdutoJdbc> buscarPorCompra(String compraNotaFiscal) throws Exception;
+    List<CompraProduto> buscarPorCompra(String compraNotaFiscal) throws Exception;
 }

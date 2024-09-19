@@ -1,7 +1,6 @@
 package com.mycompany.ecommerce.DAOs.DAOsImpl;
 
 import com.mycompany.ecommerce.DAOs.DAOS.SubcategoriaProdutoDAO;
-import com.mycompany.ecommerce.jdbcModels.SubcategoriaProdutoJdbc;
 import com.mycompany.ecommerce.models.SubcategoriaProduto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -27,7 +26,7 @@ public class SubcategoriaProdutoDAOImpl implements SubcategoriaProdutoDAO {
     @Override
     public void inserir(Object... params) throws Exception {
 
-        SubcategoriaProdutoJdbc subcategoriaProduto = (SubcategoriaProdutoJdbc) params[0];
+        SubcategoriaProduto subcategoriaProduto = (SubcategoriaProduto) params[0];
 
         String sql = "INSERT INTO subcategoria_produto (subcategoria_id, produto_id) VALUES (?, ?)";
 
@@ -57,17 +56,17 @@ public class SubcategoriaProdutoDAOImpl implements SubcategoriaProdutoDAO {
     }
 
     @Override
-    public SubcategoriaProdutoJdbc buscarPorId(Object id) throws Exception {
+    public SubcategoriaProduto buscarPorId(Object id) throws Exception {
         return null;
     }
 
     @Override
-    public List<SubcategoriaProdutoJdbc> buscarTodos() throws Exception {
+    public List<SubcategoriaProduto> buscarTodos() throws Exception {
         return List.of();
     }
 
     @Override
-    public void atualizar(SubcategoriaProdutoJdbc subcategoriaProdutoJdbc, Object id) throws Exception {
+    public void atualizar(SubcategoriaProduto subcategoriaProduto, Object id) throws Exception {
 
     }
 
@@ -80,9 +79,9 @@ public class SubcategoriaProdutoDAOImpl implements SubcategoriaProdutoDAO {
     //operacoes
 
     @Override
-    public List<SubcategoriaProdutoJdbc> buscarPorProduto(Long produtoId) throws Exception {
+    public List<SubcategoriaProduto> buscarPorProduto(Long produtoId) throws Exception {
         String sql = "SELECT * FROM subcategoria_produto WHERE produto_id = ?";
-        List<SubcategoriaProdutoJdbc> subcategoriaProdutosList = new ArrayList<>();
+        List<SubcategoriaProduto> subcategoriaProdutosList = new ArrayList<>();
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -91,7 +90,7 @@ public class SubcategoriaProdutoDAOImpl implements SubcategoriaProdutoDAO {
             try (ResultSet rs = stmt.executeQuery()) {
                 // Loop through the result set
                 while (rs.next()) {
-                    SubcategoriaProdutoJdbc subcategoriaProduto = mapRowToSubcategoriaProduto(rs);
+                    SubcategoriaProduto subcategoriaProduto = mapRowToSubcategoriaProduto(rs);
                     subcategoriaProdutosList.add(subcategoriaProduto);
                 }
             }
@@ -107,8 +106,8 @@ public class SubcategoriaProdutoDAOImpl implements SubcategoriaProdutoDAO {
 
     //map row
 
-    private SubcategoriaProdutoJdbc mapRowToSubcategoriaProduto(ResultSet rs) throws SQLException {
-        SubcategoriaProdutoJdbc subcategoriaProduto = new SubcategoriaProdutoJdbc();
+    private SubcategoriaProduto mapRowToSubcategoriaProduto(ResultSet rs) throws SQLException {
+        SubcategoriaProduto subcategoriaProduto = new SubcategoriaProduto();
         subcategoriaProduto.setId(rs.getLong("id"));
         subcategoriaProduto.setSubcategoriaId(rs.getLong("subcategoria_id"));
         subcategoriaProduto.setProdutoId(rs.getLong("produto_id"));
