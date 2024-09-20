@@ -1,10 +1,6 @@
 package com.mycompany.ecommerce.dtos;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mycompany.ecommerce.models.Produto;
-import com.mycompany.ecommerce.models.Usuario;
-import jakarta.persistence.*;
-
 import java.util.Date;
 
 public class AvaliarProdutoResponseDTO {

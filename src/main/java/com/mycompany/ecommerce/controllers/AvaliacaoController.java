@@ -2,7 +2,6 @@ package com.mycompany.ecommerce.controllers;
 
 import com.mycompany.ecommerce.dtos.AvaliarProdutoRequestDTO;
 import com.mycompany.ecommerce.dtos.AvaliarProdutoResponseDTO;
-import com.mycompany.ecommerce.models.Avaliacao;
 import com.mycompany.ecommerce.services.AvaliacaoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +18,7 @@ public class AvaliacaoController {
 
     @PostMapping(value = "/produto/{id}")
     public ResponseEntity<AvaliarProdutoResponseDTO> avaliarProduto(@PathVariable(value = "id") Long id,
-                                                                    @RequestBody AvaliarProdutoRequestDTO dto) {
+                                                                    @RequestBody AvaliarProdutoRequestDTO dto) throws Exception {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String usuarioDoc = authentication.getName();

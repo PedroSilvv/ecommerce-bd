@@ -1,5 +1,8 @@
 package com.mycompany.ecommerce.services;
 
+import com.mycompany.ecommerce.DAOs.DAOsImpl.AvaliacaoDAOImpl;
+import com.mycompany.ecommerce.DAOs.DAOsImpl.ProdutoDAOImpl;
+import com.mycompany.ecommerce.DAOs.DAOsImpl.UsuarioDAOImpl;
 import com.mycompany.ecommerce.dtos.AvaliarProdutoResponseDTO;
 import com.mycompany.ecommerce.exceptions.AvaliacaoExistenteException;
 import com.mycompany.ecommerce.exceptions.OutOfRangeException;
@@ -8,10 +11,7 @@ import com.mycompany.ecommerce.exceptions.UsuarioNotFound;
 import com.mycompany.ecommerce.models.Avaliacao;
 import com.mycompany.ecommerce.models.Produto;
 import com.mycompany.ecommerce.models.Usuario;
-import com.mycompany.ecommerce.repositories.AvaliacaoRepository;
-import com.mycompany.ecommerce.repositories.ProdutoRepository;
-import com.mycompany.ecommerce.repositories.UsuarioRepository;
-import com.mycompany.ecommerce.repositories.custom.CustomAvaliacaoRepository;
+import com.mycompany.ecommerce.DAOs.custom.CustomAvaliacaoDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,16 +19,20 @@ import org.springframework.stereotype.Service;
 public class AvaliacaoService {
 
     @Autowired
-    AvaliacaoRepository avaliacaoRepository;
-
-    @Autowired
     UsuarioService usuarioService;
 
     @Autowired
-    ProdutoRepository produtoRepository;
+    CustomAvaliacaoDAO customAvaliacaoRepository;
 
     @Autowired
-    CustomAvaliacaoRepository customAvaliacaoRepository;
+    AvaliacaoDAOImpl avaliacaoDAO;
+
+    @Autowired
+    ProdutoDAOImpl produtoDAO;
+
+    @Autowired
+    UsuarioDAOImpl usuarioDAO;
+
 
     public Long inserirAvaliacaoReturningId(Long produtoId, String doc, Integer nota) {
         return customAvaliacaoRepository.inserirAvaliacaoReturningId(produtoId, doc, nota);
@@ -40,16 +44,16 @@ public class AvaliacaoService {
         }
     }
 
-    public boolean verificarExistenciaDeAvaliacao(String doc, Long produtoId){
-        return avaliacaoRepository.existsByProdutoAndUserDoc(doc, produtoId);
+    public boolean verificarExistenciaDeAvaliacao(String doc, Long produtoId) throws Exception {
+        return avaliacaoDAO.existsByProdutoAndUserDoc(doc, produtoId);
     }
 
-    public AvaliarProdutoResponseDTO criarAvaliacao(Long produtoId, String doc, Integer nota) {
+    public AvaliarProdutoResponseDTO criarAvaliacao(Long produtoId, String doc, Integer nota) throws Exception {
 
         validarNota(nota);
 
-        Produto produto = produtoRepository.findByIdProduto(produtoId);
-        Usuario usuario = usuarioService.findUserByDoc(doc);
+        Produto produto = produtoDAO.buscarPorId(produtoId);
+        Usuario usuario = usuarioDAO.buscarPorId(doc);
 
         if (usuario == null) {
             throw new UsuarioNotFound("Usuario não encontrado");
@@ -69,7 +73,7 @@ public class AvaliacaoService {
                 produto.getId(), usuario.getDoc(), nota
         );
 
-        Avaliacao avaliacao = avaliacaoRepository.findByIdAvaliacao(idAvaliacao);
+        Avaliacao avaliacao = avaliacaoDAO.buscarPorId(idAvaliacao);
 
         AvaliarProdutoResponseDTO response = new AvaliarProdutoResponseDTO(
                 idAvaliacao, produto, usuario.getDoc(), nota, avaliacao.getDataAvaliacao()
