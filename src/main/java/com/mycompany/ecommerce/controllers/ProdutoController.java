@@ -2,15 +2,9 @@ package com.mycompany.ecommerce.controllers;
 
 import com.mycompany.ecommerce.dtos.CadastrarProdutoRequestDTO;
 import com.mycompany.ecommerce.dtos.FiltrarProdutoResponseDTO;
-import com.mycompany.ecommerce.dtos.ProdutoRequestDTO;
+import com.mycompany.ecommerce.DAOs.DAOsImpl.ProdutoDAOImpl;
 import com.mycompany.ecommerce.models.Produto;
-import com.mycompany.ecommerce.models.Subcategoria;
-import com.mycompany.ecommerce.models.SubcategoriaProduto;
-import com.mycompany.ecommerce.models.Usuario;
-import com.mycompany.ecommerce.repositories.ProdutoRepository;
-import com.mycompany.ecommerce.repositories.SubcategoriaProdutoRepository;
-import com.mycompany.ecommerce.repositories.SubcategoriaRepository;
-import com.mycompany.ecommerce.repositories.custom.CustomProdutoRepository;
+import com.mycompany.ecommerce.DAOs.custom.CustomProdutoDAO;
 import com.mycompany.ecommerce.services.ProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,12 +12,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Filter;
 
 @RestController
 @RequestMapping(value = "/api")
@@ -34,16 +26,10 @@ public class ProdutoController {
     ProdutoService produtoService;
 
     @Autowired
-    ProdutoRepository produtoRepository;
+    CustomProdutoDAO customProdutoRepository;
 
     @Autowired
-    SubcategoriaRepository subcategoriaRepository;
-
-    @Autowired
-    SubcategoriaProdutoRepository subcategoriaProdutoRepository;
-
-    @Autowired
-    CustomProdutoRepository customProdutoRepository;
+    ProdutoDAOImpl produtoDAO;
 
 
     @PostMapping("/auth/cadastrar-produto")
@@ -66,11 +52,10 @@ public class ProdutoController {
 
 
         try{
-            Produto produto = produtoRepository.findByIdProduto(id);
+            Produto produto = produtoDAO.buscarPorId(id);
 
             produtoService.atualizarProduto(
-                    produto.getId(),
-                    requestDTO
+                    requestDTO, id
             );
 
             return ResponseEntity.ok().body(produto);
@@ -83,7 +68,7 @@ public class ProdutoController {
     @GetMapping("/produto/{id}")
     public ResponseEntity<?> buscarProduto(@PathVariable(value = "id") Long id){
         try{
-            Produto produto = produtoRepository.findByIdProduto(id);
+            Produto produto = produtoDAO.buscarPorId(id);
             return ResponseEntity.ok().body(produto);
         }catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -116,21 +101,21 @@ public class ProdutoController {
     }
 
     @GetMapping("/buscar-produto-por-termo/{termo}")
-    public List<FiltrarProdutoResponseDTO> buscarProdutoPorTermo(@PathVariable(value = "termo") String termo){
+    public List<FiltrarProdutoResponseDTO> buscarProdutoPorTermo(@PathVariable(value = "termo") String termo) throws Exception {
 
         return customProdutoRepository.buscarPorTermo(termo);
     }
 
     @GetMapping("/filtrar-mais-vendidos")
-    public ResponseEntity<?> filtrarMaisVendidos(){
-        List<Map<String, Object>> produtos = produtoRepository.findMostSelled();
+    public ResponseEntity<?> filtrarMaisVendidos() throws Exception {
+        List<Map<String, Object>> produtos = produtoDAO.findMostSelled();
 
         return ResponseEntity.ok().body(produtos);
     }
 
     @GetMapping("filtrar-mais-vendido-por-data/{datai}/{dataf}")
     public ResponseEntity<?> filtrarMaisVendidosPorData(@PathVariable(value = "datai") String dataI,
-                                                        @PathVariable(value = "dataf") String dataF){
+                                                        @PathVariable(value = "dataf") String dataF) throws Exception {
 
         LocalDate localDateI = LocalDate.parse(dataI);
         Date dataConvertidaI = Date.from(localDateI.atStartOfDay(ZoneId.systemDefault()).toInstant());
@@ -138,13 +123,13 @@ public class ProdutoController {
         LocalDate localDateF = LocalDate.parse(dataF);
         Date dataConvertidaF = Date.from(localDateF.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
-        List<Map<String, Object>> produtos = produtoRepository.findMostSelledByDate(dataConvertidaI, dataConvertidaF);
+        List<Map<String, Object>> produtos = produtoDAO.findMostSelledByDate(dataConvertidaI, dataConvertidaF);
         return ResponseEntity.ok().body(produtos);
     }
 
     @GetMapping("/produtos-mais-avaliados")
-    public ResponseEntity<?> produtosMaisAvaliados(){
-        List<Map<String, Object>> produtos = produtoRepository.findMostPopulars();
+    public ResponseEntity<?> produtosMaisAvaliados() throws Exception {
+        List<Map<String, Object>> produtos = produtoDAO.findMostPopulars();
         return ResponseEntity.ok().body(produtos);
 
     }

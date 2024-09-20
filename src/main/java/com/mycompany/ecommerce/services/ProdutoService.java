@@ -2,62 +2,63 @@ package com.mycompany.ecommerce.services;
 
 import com.mycompany.ecommerce.dtos.CadastrarProdutoRequestDTO;
 import com.mycompany.ecommerce.dtos.FiltrarProdutoResponseDTO;
+import com.mycompany.ecommerce.DAOs.DAOsImpl.CategoriaDAOImpl;
+import com.mycompany.ecommerce.DAOs.DAOsImpl.ProdutoDAOImpl;
+import com.mycompany.ecommerce.DAOs.DAOsImpl.SubcategoriaDAOImpl;
+import com.mycompany.ecommerce.DAOs.DAOsImpl.SubcategoriaProdutoDAOImpl;
+import com.mycompany.ecommerce.exceptions.ProdutoNotFound;
 import com.mycompany.ecommerce.models.Categoria;
 import com.mycompany.ecommerce.models.Produto;
 import com.mycompany.ecommerce.models.Subcategoria;
 import com.mycompany.ecommerce.models.SubcategoriaProduto;
-import com.mycompany.ecommerce.repositories.CategoriaRepository;
-import com.mycompany.ecommerce.repositories.ProdutoRepository;
-import com.mycompany.ecommerce.repositories.SubcategoriaProdutoRepository;
-import com.mycompany.ecommerce.repositories.SubcategoriaRepository;
-import com.mycompany.ecommerce.repositories.custom.CustomProdutoRepository;
+import com.mycompany.ecommerce.DAOs.custom.CustomProdutoDAO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ProdutoService {
 
     @Autowired
-    ProdutoRepository produtoRepository;
+    CustomProdutoDAO customProdutoRepository;
 
     @Autowired
-    CategoriaRepository categoriaRepository;
+    ProdutoDAOImpl produtoDAO;
 
     @Autowired
-    SubcategoriaRepository subcategoriaRepository;
+    SubcategoriaDAOImpl subcategoriaDAO;
 
     @Autowired
-    SubcategoriaProdutoRepository subcategoriaProdutoRepository;
+    SubcategoriaProdutoDAOImpl subcategoriaProdutoDAO;
 
     @Autowired
-    CustomProdutoRepository customProdutoRepository;
+    CategoriaDAOImpl categoriaDAO;
 
-    public void createProduto(Categoria categoria, String nome, String descricao, Integer quantidade, BigDecimal preco) {
-        System.out.println("ProdutoService.createProduto");
-        produtoRepository.createProduto(categoria.getId(), nome, descricao, quantidade, preco);
+    public void createProduto(Produto produto) throws Exception {
+        produtoDAO.inserir(produto);
     }
 
     public Long inserirProdutoRetornoId(Categoria categoria, String nome, String descricao, Integer quantidade, BigDecimal preco) throws Exception {
-        System.out.println("ProdutoService.createProduto");
         return customProdutoRepository.inserirProdutoReturningId(categoria.getId(), nome, descricao, quantidade, preco);
     }
 
     public List<Produto> findProdutoByCategoria(Long idCategoria) throws Exception {
 
-        Optional<Categoria> categoria = categoriaRepository.findById(idCategoria);
+        try{
+            Categoria categoria = categoriaDAO.buscarPorId(idCategoria);
 
-        if(categoria.isEmpty()){
-            throw new Exception("Categoria inexistente");
+            if(categoria == null){
+                throw new Exception("Categoria inexistente");
+            }
+
+            return produtoDAO.buscarPorCategoria(idCategoria);
+
         }
-
-        return produtoRepository.findByCategoria(idCategoria);
+        catch (Exception e){
+            throw new Exception("Categoria não encontrada: " + e.getMessage());
+        }
     }
 
 
@@ -67,9 +68,9 @@ public class ProdutoService {
             System.out.println("ProdutoService.cadastrarNovoProduto");
 
             for (String sub : produto.getSubcategorias()) {
-                Subcategoria subcategoria = subcategoriaRepository.findByNome(sub);
+                Subcategoria subcategoria = subcategoriaDAO.buscarPorNome(sub);
 
-                if(!subcategoria.getCategoria().getId().equals(produto.getCategoria().getId())){
+                if(!subcategoria.getCategoriaId().equals(produto.getCategoria().getId())){
                     throw new Exception("Subcategoria não permitida.");
                 }
             }
@@ -79,23 +80,22 @@ public class ProdutoService {
                     produto.getDescricao(), produto.getQuantidade(),
                     produto.getPreco()
             );
-
-            Produto novoProduto = produtoRepository.findByIdProduto(idNovoProduto);
+            System.out.println(idNovoProduto);
+            Produto novoProduto = produtoDAO.buscarPorId(idNovoProduto);
 
             for (String sub : produto.getSubcategorias()) {
                 SubcategoriaProduto subcategoriaProduto = new SubcategoriaProduto();
 
-                Subcategoria subcategoria = subcategoriaRepository.findByNome(sub);
+                Subcategoria subcategoria = subcategoriaDAO.buscarPorNome(sub);
 
 
                 System.out.println(novoProduto);
 
-                subcategoriaProduto.setProduto(novoProduto);
-                subcategoriaProduto.setSubcategoria(subcategoria);
+                subcategoriaProduto.setProdutoId(novoProduto.getId());
+                subcategoriaProduto.setSubcategoriaId(subcategoria.getId());
                 System.out.println(subcategoria);
-                subcategoriaProdutoRepository.create(
-                        subcategoriaProduto.getSubcategoria().getId(),
-                        subcategoriaProduto.getProduto().getId());
+                subcategoriaProdutoDAO.inserir(
+                        subcategoriaProduto);
             }
 
             return novoProduto;
@@ -119,22 +119,27 @@ public class ProdutoService {
 
     }
 
-    public void atualizarQuantidadeProduto(Integer novoValor, Long id){
-        produtoRepository.updateQuantidade(novoValor, id);
+    public void atualizarQuantidadeProduto(Integer novaQuantidade, Long id) throws Exception {
+        try{
+            produtoDAO.atualizarQuantidade(novaQuantidade, id);
+        }
+        catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
     }
 
-    public void atualizarProduto(Long id, Produto novoProduto) throws Exception {
+    public void atualizarProduto(Produto novoProduto, Long id) throws Exception {
 
         try{
-            Produto produto = produtoRepository.findByIdProduto(id);
+            Produto produtoAtualizado = produtoDAO.buscarPorId(id);
 
-            produtoRepository.updateProduto(
-                    novoProduto.getNome(),
-                    novoProduto.getDescricao(),
-                    novoProduto.getQuantidade(),
-                    novoProduto.getPreco(),
-                    novoProduto.getCategoria().getId(),
-                    produto.getId()
+            if(produtoAtualizado == null){
+                throw new ProdutoNotFound("Produto não encontraod");
+            }
+
+            produtoDAO.atualizar(
+                    novoProduto,
+                    produtoAtualizado.getId()
                     );
 
         }catch (Exception e){
@@ -145,8 +150,7 @@ public class ProdutoService {
     public void atualizarQuantidadVendas(Integer novaQuantidade, Long id) throws Exception {
 
         try{
-
-            produtoRepository.updateQuantidadeDeVendas(novaQuantidade, id);
+            produtoDAO.atualizarQuantidadeDeVendas(novaQuantidade, id);
 
         }catch (Exception e){
             throw new Exception(e.getMessage());

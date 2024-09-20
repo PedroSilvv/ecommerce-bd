@@ -11,13 +11,6 @@ import java.util.Map;
 
 public interface ProdutoDAO extends GenericDAO<Produto> {
 
-    //CRUD
-//    void inserirProduto(ProdutoJdbc produto) throws Exception;
-//    void atualizarProduto(ProdutoJdbc produto, Long id) throws Exception;
-//    void deletarProduto(Long id) throws Exception;
-//    ProdutoJdbc buscarPorId(Long id) throws Exception;
-//    List<ProdutoJdbc> buscarTodos() throws Exception;
-
     //Operações
     List<Produto> buscarPorCategoria(Long categoria) throws Exception;
     void atualizarQuantidade(Integer novaQuantidade, Long id) throws Exception;

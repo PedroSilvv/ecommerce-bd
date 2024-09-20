@@ -1,28 +1,25 @@
 package com.mycompany.ecommerce.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.mycompany.ecommerce.models.Produto;
-import com.mycompany.ecommerce.models.Subcategoria;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public class ProdutoRequestDTO {
 
     @JsonProperty
-    private Long produto_id;
+    private Long produtoId;
 
     @JsonProperty
     private Integer quantidadeComprada;
 
     private BigDecimal precoTotal;
 
-    public Long getProduto_id() {
-        return produto_id;
+    public Long getProdutoId() {
+        return produtoId;
     }
 
-    public void setProduto_id(Long produto_id) {
-        this.produto_id = produto_id;
+    public void setProdutoId(Long produtoId) {
+        this.produtoId = produtoId;
     }
 
     public BigDecimal getPrecoTotal() {
