@@ -2,9 +2,6 @@ package com.mycompany.ecommerce.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mycompany.ecommerce.models.Categoria;
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 
 import java.math.BigDecimal;
 import java.util.Set;

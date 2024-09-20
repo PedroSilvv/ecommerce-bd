@@ -7,6 +7,5 @@ import java.util.List;
 
 public interface SubcategoriaProdutoDAO extends GenericDAO<SubcategoriaProduto> {
 
-//    void inserirSubcategoriaProduto(SubcategoriaProdutoJdbc subcategoriaProdutoJdbc) throws Exception;
     List<SubcategoriaProduto> buscarPorProduto(Long produtoId) throws Exception;
 }

@@ -6,6 +6,4 @@ import com.mycompany.ecommerce.models.Subcategoria;
 public interface SubcategoriaDAO extends GenericDAO<Subcategoria> {
 
     Subcategoria buscarPorNome(String nome) throws Exception;
-
-//    SubcategoriaJdbc buscarPorId(Long id) throws Exception;
 }

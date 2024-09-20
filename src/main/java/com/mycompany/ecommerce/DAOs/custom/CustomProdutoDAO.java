@@ -1,15 +1,14 @@
-package com.mycompany.ecommerce.repositories.custom;
+package com.mycompany.ecommerce.DAOs.custom;
 
+import com.mycompany.ecommerce.DAOs.DAOsImpl.ProdutoDAOImpl;
+import com.mycompany.ecommerce.DAOs.DAOsImpl.SubcategoriaDAOImpl;
+import com.mycompany.ecommerce.DAOs.DAOsImpl.SubcategoriaProdutoDAOImpl;
 import com.mycompany.ecommerce.dtos.FiltrarProdutoResponseDTO;
-import com.mycompany.ecommerce.models.Categoria;
 import com.mycompany.ecommerce.models.Produto;
 import com.mycompany.ecommerce.models.SubcategoriaProduto;
-import com.mycompany.ecommerce.repositories.ProdutoRepository;
-import com.mycompany.ecommerce.repositories.SubcategoriaProdutoRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
-import jakarta.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -18,16 +17,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class CustomProdutoRepository {
+public class CustomProdutoDAO {
 
     @PersistenceContext
     private EntityManager entityManager;
 
     @Autowired
-    ProdutoRepository produtoRepository;
+    SubcategoriaProdutoDAOImpl subcategoriaProdutoDAO;
 
     @Autowired
-    SubcategoriaProdutoRepository subcategoriaProdutoRepository;
+    ProdutoDAOImpl produtoDAO;
+
+    @Autowired
+    SubcategoriaDAOImpl subcategoriaDAO;
 
 
     public Long inserirProdutoReturningId(Long categoria, String nome, String descricao, Integer quantidade, BigDecimal preco) throws Exception {
@@ -53,7 +55,7 @@ public class CustomProdutoRepository {
 
     }
 
-    public List<FiltrarProdutoResponseDTO> filtrarProdutos(String nome, String categoria, BigDecimal precoMinimo, BigDecimal precoMaximo, String descricao) {
+    public List<FiltrarProdutoResponseDTO> filtrarProdutos(String nome, String categoria, BigDecimal precoMinimo, BigDecimal precoMaximo, String descricao) throws Exception {
         StringBuilder queryBuilder = new StringBuilder("SELECT p.nome, p.preco, p.quantidade, c.nome, p.descricao, p.id " +
                 " FROM produto p JOIN categoria c ON p.categoria_id = c.id " +
                 "WHERE 1=1 ");
@@ -104,12 +106,13 @@ public class CustomProdutoRepository {
             String descricaoProduto = (String) o[4];
             Long idProduto = (Long) o[5];
 
-            Produto produto = produtoRepository.findByIdProduto(idProduto);
-            List<SubcategoriaProduto> subcategorias = subcategoriaProdutoRepository.findByProduto(produto);
+            Produto produto = produtoDAO.buscarPorId(idProduto);
+            List<SubcategoriaProduto> subcategorias = subcategoriaProdutoDAO.buscarPorProduto(produto.getId());
 
             List<String> subcategoriasNome = new ArrayList<>();
             for (SubcategoriaProduto s: subcategorias) {
-                subcategoriasNome.add(s.getSubcategoria().getNome());
+                String sNome = subcategoriaDAO.buscarPorId(s.getSubcategoriaId()).getNome();
+                subcategoriasNome.add(sNome);
             }
 
             dtos.add(new FiltrarProdutoResponseDTO(nomeProduto, precoProduto, quantidadeProduto, categoriaProduto, descricaoProduto, subcategoriasNome));
@@ -118,7 +121,7 @@ public class CustomProdutoRepository {
         return dtos;
     }
 
-    public List<FiltrarProdutoResponseDTO> buscarPorTermo(String termo){
+    public List<FiltrarProdutoResponseDTO> buscarPorTermo(String termo) throws Exception {
 
         StringBuilder queryBuilder = new StringBuilder("SELECT p.nome, p.preco, p.quantidade, c.nome, p.descricao, p.id \n" +
                 "FROM produto p\n" +
@@ -145,12 +148,13 @@ public class CustomProdutoRepository {
             String descricaoProduto = (String) o[4];
             Long idProduto = (Long) o[5];
 
-            Produto produto = produtoRepository.findByIdProduto(idProduto);
-            List<SubcategoriaProduto> subcategorias = subcategoriaProdutoRepository.findByProduto(produto);
+            Produto produto = produtoDAO.buscarPorId(idProduto);
+            List<SubcategoriaProduto> subcategorias = subcategoriaProdutoDAO.buscarPorProduto(produto.getId());
 
             List<String> subcategoriasNome = new ArrayList<>();
             for (SubcategoriaProduto s: subcategorias) {
-                subcategoriasNome.add(s.getSubcategoria().getNome());
+                String sNome = subcategoriaDAO.buscarPorId(s.getSubcategoriaId()).getNome();
+                subcategoriasNome.add(sNome);
             }
 
             dtos.add(new FiltrarProdutoResponseDTO(nomeProduto, precoProduto, quantidadeProduto, categoriaProduto, descricaoProduto, subcategoriasNome));

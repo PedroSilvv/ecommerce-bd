@@ -1,16 +1,13 @@
-package com.mycompany.ecommerce.repositories.custom;
+package com.mycompany.ecommerce.DAOs.custom;
 
 import com.mycompany.ecommerce.exceptions.NotFoundException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
-
 @Repository
-public class CustomAvaliacaoRepository {
+public class CustomAvaliacaoDAO {
 
     @PersistenceContext
     EntityManager entityManager;
