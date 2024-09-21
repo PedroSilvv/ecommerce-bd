@@ -1,13 +1,10 @@
 package com.mycompany.ecommerce.services;
 
+import com.mycompany.ecommerce.DAOs.DAOsImpl.UsuarioDAOImpl;
 import com.mycompany.ecommerce.models.Usuario;
-import com.mycompany.ecommerce.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.management.relation.Role;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
@@ -15,17 +12,16 @@ import java.util.List;
 public class UsuarioService {
 
     @Autowired
-    UsuarioRepository usuarioRepository;
+    UsuarioDAOImpl usuarioDAO;
 
-    public List<Usuario> findAllUsuarios(){
-        //return usuarioRepository.findAll();
-        return usuarioRepository.findAll();
+    public List<Usuario> findAllUsuarios() throws Exception {
+        return usuarioDAO.buscarTodos();
     }
 
-    public void createUser(String doc, String nome, Usuario.Role role, String password) throws Exception {
+    public void inserirUsuario(String doc, String nome, Usuario.Role role, String password) throws Exception {
 
         try{
-            usuarioRepository.createUser(
+            usuarioDAO.inserir(
                     doc, nome, role.toString(), password
             );
         }
@@ -37,7 +33,7 @@ public class UsuarioService {
 
     public Usuario findUserByDoc(String doc){
 
-        return usuarioRepository.findByDoc(doc);
+        return usuarioDAO.buscarPorId(doc);
 
     }
 

@@ -3,7 +3,6 @@ package com.mycompany.ecommerce.controllers;
 import com.mycompany.ecommerce.dtos.CriarUsuarioDTO;
 import com.mycompany.ecommerce.models.Usuario;
 import com.mycompany.ecommerce.services.UsuarioService;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -11,11 +10,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -30,7 +24,7 @@ public class UsuarioController {
 
 
     @GetMapping("/usuarios")
-    public ResponseEntity<List<Usuario>> usuariosList(){
+    public ResponseEntity<List<Usuario>> usuariosList() throws Exception {
         return ResponseEntity.ok().body(usuarioService.findAllUsuarios());
     }
 
@@ -60,7 +54,7 @@ public class UsuarioController {
             String senhaCript = passwordEncoder.encode(usuario.getPassword());
 
             Usuario.Role role = isAdmin ? Usuario.Role.ADMIN : Usuario.Role.DEFAULT;
-            usuarioService.createUser(
+            usuarioService.inserirUsuario(
                     usuario.getDoc(),
                     usuario.getNome(),
                     role,

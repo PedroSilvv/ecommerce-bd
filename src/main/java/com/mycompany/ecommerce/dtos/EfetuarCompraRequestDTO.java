@@ -1,30 +1,23 @@
 package com.mycompany.ecommerce.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.mycompany.ecommerce.models.Compra;
-import com.mycompany.ecommerce.models.CompraProduto;
-import com.mycompany.ecommerce.models.Produto;
-import com.mycompany.ecommerce.models.Usuario;
-import jakarta.persistence.*;
-
-import java.math.BigDecimal;
 import java.util.Set;
 
 public class EfetuarCompraRequestDTO {
 
 
     @JsonProperty
-    private Usuario usuario;
+    private String usuarioDoc;
 
     @JsonProperty
     private Set<ProdutoRequestDTO> produtos;
 
-    public Usuario getUsuario() {
-        return usuario;
+    public String getUsuarioDoc() {
+        return usuarioDoc;
     }
 
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
+    public void setUsuarioDoc(String usuarioDoc) {
+        this.usuarioDoc = usuarioDoc;
     }
 
     public Set<ProdutoRequestDTO> getProdutos() {

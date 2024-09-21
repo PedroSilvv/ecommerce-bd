@@ -9,15 +9,7 @@ import java.util.List;
 public interface CompraDAO extends GenericDAO<Compra> {
 
     List<Compra> buscarPorUsuario(String usuarioDoc) throws Exception;
-
-//    void inserirCompra(
-//            String nota_fiscal,
-//            String usuarioDoc,
-//            String statusCompra,
-//            BigDecimal precoTotal,
-//            Date dataCompra
-//    ) throws Exception;
-
     void atualizarPrecoTotal(BigDecimal precoTotal, String notaFiscal) throws Exception;
+    void alterarStatusCompra(String notaFiscal, String status) throws Exception;
 
 }

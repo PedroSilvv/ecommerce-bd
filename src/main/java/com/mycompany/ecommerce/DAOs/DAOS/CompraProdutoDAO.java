@@ -6,12 +6,5 @@ import java.util.List;
 
 public interface CompraProdutoDAO extends GenericDAO<CompraProduto> {
 
-//    void inserirCompraProduto(
-//           String compraId,
-//           Long produtoId,
-//           Integer quantidadeItem,
-//           BigDecimal precoTotalItem
-//    ) throws Exception;
-
     List<CompraProduto> buscarPorCompra(String compraNotaFiscal) throws Exception;
 }

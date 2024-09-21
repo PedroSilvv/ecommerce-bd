@@ -2,15 +2,15 @@ package com.mycompany.ecommerce.DAOs.DAOsImpl;
 
 import com.mycompany.ecommerce.DAOs.DAOS.CompraDAO;
 import com.mycompany.ecommerce.models.Compra;
+import com.mycompany.ecommerce.models.CompraProduto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.sql.Date;
+import java.util.*;
 
 @Repository
 public class CompraDAOImpl implements CompraDAO {
@@ -22,6 +22,8 @@ public class CompraDAOImpl implements CompraDAO {
         this.dataSource = dataSource;
     }
 
+    @Autowired
+    CompraProdutoDAOImpl compraProdutoDAO;
 
     //crud
 
@@ -139,7 +141,7 @@ public class CompraDAOImpl implements CompraDAO {
 
     @Override
     public void atualizarPrecoTotal(BigDecimal precoTotal, String notaFiscal) throws Exception {
-        System.out.println("CompraDAOImpl.atualizarPrecoTotal");
+
         String sql = "UPDATE compra SET preco_total = ? WHERE nota_fiscal = ?";
 
         try (Connection conn = dataSource.getConnection();
@@ -159,17 +161,40 @@ public class CompraDAOImpl implements CompraDAO {
         }
     }
 
+    @Override
+    public void alterarStatusCompra(String notaFiscal, String status) throws Exception {
+        String sql = "UPDATE compra SET status_compra = ? WHERE nota_fiscal = ?";
 
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, status);
+            stmt.setString(2, notaFiscal);
+
+            int affectedRows = stmt.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("Erro ao atualizar status da compra");
+            }
+
+        } catch (SQLException e) {
+            throw new Exception("Erro ao atualizar status da compra: " + e.getMessage(), e);
+        }
+    }
 
 
     //MAP ROW
-    private Compra mapRowToCompra(ResultSet rs) throws SQLException {
+    private Compra mapRowToCompra(ResultSet rs) throws Exception {
         Compra compra = new Compra();
         compra.setNotaFiscal(rs.getString("nota_fiscal"));
         compra.setUsuarioDoc(rs.getString("usuario_doc"));
         compra.setStatusJdbc(rs.getString("status_compra"));
         compra.setPrecoTotal(rs.getBigDecimal("preco_total"));
         compra.setDataCompra(rs.getDate("data_compra"));
+
+        List<CompraProduto> compraProdutoList = compraProdutoDAO.buscarPorCompra(rs.getString("nota_fiscal"));
+        Set<CompraProduto> compraProdutoSet = new HashSet<>(compraProdutoList);
+        compra.setCompraProdutos(compraProdutoSet);
 
         return compra;
     }

@@ -112,6 +112,7 @@ public class CompraProdutoDAOImpl implements CompraProdutoDAO {
         compraProduto.setCompraNotaFiscal(rs.getString("compra_nota_fiscal"));
         compraProduto.setProdutoId(rs.getLong("produto_id"));
         compraProduto.setQuantidadeItem(rs.getInt("quantidade_item"));
+        compraProduto.setPrecoTotalItem(rs.getBigDecimal("preco_total_item"));
 
         return compraProduto;
     }

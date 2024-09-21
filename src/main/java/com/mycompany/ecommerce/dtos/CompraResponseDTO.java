@@ -1,10 +1,9 @@
 package com.mycompany.ecommerce.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.mycompany.ecommerce.models.Compra;
-import com.mycompany.ecommerce.models.CompraProduto;
-import com.mycompany.ecommerce.models.Usuario;
 
+
+import java.math.BigDecimal;
 import java.util.*;
 
 public class CompraResponseDTO {
@@ -20,6 +19,9 @@ public class CompraResponseDTO {
 
     @JsonProperty
     private Date dataCompra;
+
+    @JsonProperty
+    private BigDecimal precoTotal;
 
     public List<CompraProdutoResponseDTO> getProdutos() {
         return produtos;
@@ -51,5 +53,13 @@ public class CompraResponseDTO {
 
     public void setDataCompra(Date dataCompra) {
         this.dataCompra = dataCompra;
+    }
+
+    public BigDecimal getPrecoTotal() {
+        return precoTotal;
+    }
+
+    public void setPrecoTotal(BigDecimal precoTotal) {
+        this.precoTotal = precoTotal;
     }
 }
