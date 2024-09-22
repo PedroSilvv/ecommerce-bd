@@ -1,8 +1,6 @@
 package com.mycompany.ecommerce.services;
 
 import com.mycompany.ecommerce.DAOs.DAOsImpl.AvaliacaoDAOImpl;
-import com.mycompany.ecommerce.DAOs.DAOsImpl.ProdutoDAOImpl;
-import com.mycompany.ecommerce.DAOs.DAOsImpl.UsuarioDAOImpl;
 import com.mycompany.ecommerce.dtos.AvaliarProdutoResponseDTO;
 import com.mycompany.ecommerce.exceptions.AvaliacaoExistenteException;
 import com.mycompany.ecommerce.exceptions.OutOfRangeException;
@@ -28,11 +26,7 @@ public class AvaliacaoService {
     AvaliacaoDAOImpl avaliacaoDAO;
 
     @Autowired
-    ProdutoDAOImpl produtoDAO;
-
-    @Autowired
-    UsuarioDAOImpl usuarioDAO;
-
+    ProdutoService produtoService;
 
     public Long inserirAvaliacaoReturningId(Long produtoId, String doc, Integer nota) {
         return customAvaliacaoRepository.inserirAvaliacaoReturningId(produtoId, doc, nota);
@@ -52,8 +46,8 @@ public class AvaliacaoService {
 
         validarNota(nota);
 
-        Produto produto = produtoDAO.buscarPorId(produtoId);
-        Usuario usuario = usuarioDAO.buscarPorId(doc);
+        Produto produto = produtoService.buscarProdutoPorId(produtoId);
+        Usuario usuario = usuarioService.findUserByDoc(doc);
 
         if (usuario == null) {
             throw new UsuarioNotFound("Usuario não encontrado");

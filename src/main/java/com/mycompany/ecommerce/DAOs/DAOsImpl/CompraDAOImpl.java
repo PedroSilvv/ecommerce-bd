@@ -72,7 +72,7 @@ public class CompraDAOImpl implements CompraDAO {
 
     @Override
     public void inserir(Object... params) throws Exception {
-
+        System.out.println("CompraDAOImpl.inserir");
         String notaFiscal = (String) params[0];
         String usuarioDoc = (String) params[1];
         String statusCompra = (String) params[2];
@@ -81,7 +81,7 @@ public class CompraDAOImpl implements CompraDAO {
 
         String sql =
                 "INSERT INTO compra (nota_fiscal, usuario_doc, status_compra, preco_total, data_compra)" +
-                        " VALUES (?, ?, ?, ?, ?)";
+                " VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -114,8 +114,7 @@ public class CompraDAOImpl implements CompraDAO {
     }
 
 
-
-    //
+    // operacoes
     @Override
     public List<Compra> buscarPorUsuario(String usuarioDoc) throws Exception {
         String sql = "SELECT * FROM compra WHERE usuario_doc = ?";
@@ -184,6 +183,7 @@ public class CompraDAOImpl implements CompraDAO {
 
 
     //MAP ROW
+
     private Compra mapRowToCompra(ResultSet rs) throws Exception {
         Compra compra = new Compra();
         compra.setNotaFiscal(rs.getString("nota_fiscal"));

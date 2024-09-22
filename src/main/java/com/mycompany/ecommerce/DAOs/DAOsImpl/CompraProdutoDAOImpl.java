@@ -103,7 +103,6 @@ public class CompraProdutoDAOImpl implements CompraProdutoDAO {
     }
 
 
-
     //map row
 
     private CompraProduto mapRowToCompraProduto(ResultSet rs) throws SQLException {

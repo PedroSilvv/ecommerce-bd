@@ -13,11 +13,11 @@ import org.springframework.stereotype.Service;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
-    private UsuarioDAOImpl usuarioDAO;
+    private UsuarioService usuarioService;
 
     @Override
     public UserDetails loadUserByUsername(String doc) throws UsernameNotFoundException {
-        Usuario user = usuarioDAO.buscarPorId(doc);
+        Usuario user = usuarioService.findUserByDoc(doc);
         if (user == null) {
             throw new UsernameNotFoundException("Usuário não encontrado com o documento : " + doc);
         }

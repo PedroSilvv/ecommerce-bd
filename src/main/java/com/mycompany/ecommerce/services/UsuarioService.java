@@ -32,7 +32,6 @@ public class UsuarioService {
     }
 
     public Usuario findUserByDoc(String doc){
-
         return usuarioDAO.buscarPorId(doc);
 
     }

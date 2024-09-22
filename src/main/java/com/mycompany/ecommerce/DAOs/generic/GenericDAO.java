@@ -10,5 +10,4 @@ public interface GenericDAO<T>{
     public void atualizar(T t,  Object id) throws Exception;
     public void delete(Long id) throws Exception;
 
-
 }

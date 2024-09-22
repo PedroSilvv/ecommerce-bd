@@ -72,7 +72,6 @@ public class AvaliacaoDAOImpl implements AvaliacaoDAO {
         }
     }
 
-
     @Override
     public List<Avaliacao> buscarTodos() throws Exception {
         return List.of();
