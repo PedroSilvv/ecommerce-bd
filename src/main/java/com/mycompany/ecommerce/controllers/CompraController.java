@@ -75,7 +75,7 @@ public class CompraController {
                 Produto produtoComprado = produtoDAO.buscarPorId(produto.getProdutoId());
 
                 if(produto.getQuantidadeComprada() > produtoComprado.getQuantidade()){
-                    return ResponseEntity.badRequest().body("Quantidade não disponivel em estoque. Produto: "+ produtoComprado.getNome());
+                    return ResponseEntity.badRequest().body("Quantidade não disponivel em estoque. Produto: "+ produtoComprado.getNome() +" - "+ produto.getProdutoId()) ;
                 }
 
                 CompraProduto compraProduto = new CompraProduto();

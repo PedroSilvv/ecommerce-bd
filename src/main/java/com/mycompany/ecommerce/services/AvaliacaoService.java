@@ -2,10 +2,7 @@ package com.mycompany.ecommerce.services;
 
 import com.mycompany.ecommerce.DAOs.DAOsImpl.AvaliacaoDAOImpl;
 import com.mycompany.ecommerce.dtos.AvaliarProdutoResponseDTO;
-import com.mycompany.ecommerce.exceptions.AvaliacaoExistenteException;
-import com.mycompany.ecommerce.exceptions.OutOfRangeException;
-import com.mycompany.ecommerce.exceptions.ProdutoNotFound;
-import com.mycompany.ecommerce.exceptions.UsuarioNotFound;
+import com.mycompany.ecommerce.exceptions.*;
 import com.mycompany.ecommerce.models.Avaliacao;
 import com.mycompany.ecommerce.models.Produto;
 import com.mycompany.ecommerce.models.Usuario;
@@ -27,6 +24,16 @@ public class AvaliacaoService {
 
     @Autowired
     ProdutoService produtoService;
+
+    public Avaliacao buscarAvaliacaoPorId(Long id) throws Exception {
+
+        Avaliacao avaliacao = avaliacaoDAO.buscarPorId(id);
+        if (avaliacao == null) {
+            throw new NotFoundException("Avaliação não encontrado com id: "+ id);
+        }
+
+        return avaliacao;
+    }
 
     public Long inserirAvaliacaoReturningId(Long produtoId, String doc, Integer nota) {
         return customAvaliacaoRepository.inserirAvaliacaoReturningId(produtoId, doc, nota);
@@ -67,7 +74,7 @@ public class AvaliacaoService {
                 produto.getId(), usuario.getDoc(), nota
         );
 
-        Avaliacao avaliacao = avaliacaoDAO.buscarPorId(idAvaliacao);
+        Avaliacao avaliacao = this.buscarAvaliacaoPorId(idAvaliacao);
 
         AvaliarProdutoResponseDTO response = new AvaliarProdutoResponseDTO(
                 idAvaliacao, produto, usuario.getDoc(), nota, avaliacao.getDataAvaliacao()

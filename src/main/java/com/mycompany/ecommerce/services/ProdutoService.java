@@ -31,13 +31,13 @@ public class ProdutoService {
     ProdutoDAOImpl produtoDAO;
 
     @Autowired
-    SubcategoriaDAOImpl subcategoriaDAO;
+    SubcategoriaService subcategoriaService;
 
     @Autowired
     SubcategoriaProdutoDAOImpl subcategoriaProdutoDAO;
 
     @Autowired
-    CategoriaDAOImpl categoriaDAO;
+    CategoriaService categoriaService;
 
 
 
@@ -53,8 +53,8 @@ public class ProdutoService {
         produtoDAO.inserir(produto);
     }
 
-    public Long inserirProdutoRetornoId(Categoria categoria, String nome, String descricao, Integer quantidade, BigDecimal preco) throws Exception {
-        return customProdutoRepository.inserirProdutoReturningId(categoria.getId(), nome, descricao, quantidade, preco);
+    public Long inserirProdutoRetornoId(Long categoria, String nome, String descricao, Integer quantidade, BigDecimal preco) throws Exception {
+        return customProdutoRepository.inserirProdutoReturningId(categoria, nome, descricao, quantidade, preco);
     }
 
     public Produto cadastrarNovoProduto(CadastrarProdutoRequestDTO produto) throws Exception {
@@ -63,9 +63,9 @@ public class ProdutoService {
             System.out.println("ProdutoService.cadastrarNovoProduto");
 
             for (String sub : produto.getSubcategorias()) {
-                Subcategoria subcategoria = subcategoriaDAO.buscarPorNome(sub);
+                Subcategoria subcategoria = subcategoriaService.buscarSubcategoriaPorNome(sub);
 
-                if(!subcategoria.getCategoriaId().equals(produto.getCategoria().getId())){
+                if(!subcategoria.getCategoriaId().equals(produto.getCategoria())){
                     throw new Exception("Subcategoria não permitida.");
                 }
             }
@@ -81,7 +81,7 @@ public class ProdutoService {
             for (String sub : produto.getSubcategorias()) {
                 SubcategoriaProduto subcategoriaProduto = new SubcategoriaProduto();
 
-                Subcategoria subcategoria = subcategoriaDAO.buscarPorNome(sub);
+                Subcategoria subcategoria = subcategoriaService.buscarSubcategoriaPorNome(sub);
 
                 System.out.println(novoProduto);
 
@@ -101,7 +101,7 @@ public class ProdutoService {
 
     public List<Produto> buscarProdutoPorCategoria(Long idCategoria) throws Exception {
 
-            Categoria categoria = categoriaDAO.buscarPorId(idCategoria);
+            Categoria categoria = categoriaService.buscarCategoriaPorId(idCategoria);
 
             if(categoria == null){
                 throw new NotFoundException("Categoria não encontrada com ID: " + idCategoria);
@@ -115,10 +115,6 @@ public class ProdutoService {
     public void atualizarProduto(Produto novoProduto, Long id) throws Exception {
 
         Produto produtoAtualizado = this.buscarProdutoPorId(id);
-
-        if(produtoAtualizado == null){
-            throw new ProdutoNotFound("Produto não encontraod");
-        }
 
         produtoDAO.atualizar(
                 novoProduto,
@@ -153,6 +149,8 @@ public class ProdutoService {
     public List<FiltrarProdutoResponseDTO> filtrarProdutos(String nome, String categoria, BigDecimal precoMinimo, BigDecimal precoMaximo, String descricao) throws Exception {
 
         try{
+
+            System.out.println("ProdutoService.filtrarProdutos");
             List<FiltrarProdutoResponseDTO> produtos = customProdutoRepository.filtrarProdutos(
                     nome, categoria, precoMinimo, precoMaximo, descricao);
 

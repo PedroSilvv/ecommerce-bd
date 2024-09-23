@@ -21,7 +21,7 @@ public class CategoriaController {
     public ResponseEntity<String> cadastrarCategoria(@RequestBody Categoria categoria) {
 
         try {
-            categoriaService.inserirSubcategoria(categoria);
+            categoriaService.inserirCategoria(categoria);
             return ResponseEntity.ok().body("Inserido com sucesso");
         }
         catch (NotFoundException e){
@@ -37,7 +37,7 @@ public class CategoriaController {
     public ResponseEntity<List<Categoria>> listarTodasCategorias() {
 
         try {
-            List<Categoria> categorias = categoriaService.buscarTodasSubcategorias();
+            List<Categoria> categorias = categoriaService.buscarTodasCategorias();
             return ResponseEntity.ok().body(categorias);
         }
         catch (Exception e){
@@ -50,7 +50,7 @@ public class CategoriaController {
     public ResponseEntity<Categoria> categoriaPorId(@PathVariable(value = "id") Long id) {
 
         try {
-            Categoria categoria = categoriaService.buscarSubcategoriaPorId(id);
+            Categoria categoria = categoriaService.buscarCategoriaPorId(id);
             return ResponseEntity.ok().body(categoria);
         }
         catch (NotFoundException e){
@@ -66,8 +66,8 @@ public class CategoriaController {
     public ResponseEntity<Categoria> atualizaCategoria(@PathVariable(value = "id") Long id, @RequestBody Categoria categoria) {
 
         try {
-            categoriaService.atualizarSubcategoria(categoria ,id);
-            Categoria categoriaAtualizada = categoriaService.buscarSubcategoriaPorId(id);
+            categoriaService.atualizarCategoria(categoria ,id);
+            Categoria categoriaAtualizada = categoriaService.buscarCategoriaPorId(id);
             return ResponseEntity.ok().body(categoriaAtualizada);
         }
         catch (NotFoundException e){
@@ -82,7 +82,7 @@ public class CategoriaController {
     public ResponseEntity<?> deletarCategoria(@PathVariable(value = "id") Long id) {
 
         try {
-            categoriaService.excluirSubcategoria(id);
+            categoriaService.excluirCategoria(id);
             return ResponseEntity.ok().body("Deletada com sucesso!");
         }
         catch (NotFoundException e){

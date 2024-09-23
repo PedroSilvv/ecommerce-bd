@@ -8,7 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/api")
@@ -92,4 +96,21 @@ public class SubcategoriaController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @GetMapping(value = "/subcategorias-mais-vendidas/{datai}/{dataf}")
+    public List<Map<String, Object>> subcategoriasMaisVendidas(@PathVariable(value = "datai") String dataI,
+                                                               @PathVariable(value = "dataf") String dataF) throws Exception {
+
+
+        LocalDate localDateI = LocalDate.parse(dataI);
+        Date dataConvertidaI = Date.from(localDateI.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        LocalDate localDateF = LocalDate.parse(dataF);
+        Date dataConvertidaF = Date.from(localDateF.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        java.sql.Date sqlI = new java.sql.Date(dataConvertidaI.getTime());
+        java.sql.Date sqlF = new java.sql.Date(dataConvertidaF.getTime());
+        return subcategoriaService.buscarSubcategoriasComMaisVendas(sqlI, sqlF);
+    }
+
 }

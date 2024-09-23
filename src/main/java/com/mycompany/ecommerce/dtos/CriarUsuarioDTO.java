@@ -1,6 +1,8 @@
 package com.mycompany.ecommerce.dtos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.time.LocalDate;
 import java.util.Date;
 
 public class CriarUsuarioDTO {
@@ -10,6 +12,16 @@ public class CriarUsuarioDTO {
     private String nome;
 
     private String password;
+
+    private LocalDate dataNasc;
+
+    public LocalDate getDataNasc() {
+        return dataNasc;
+    }
+
+    public void setDataNasc(LocalDate dataNasc) {
+        this.dataNasc = dataNasc;
+    }
 
     public String getDoc() {
         return doc;

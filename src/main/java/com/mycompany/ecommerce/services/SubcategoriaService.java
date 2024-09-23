@@ -6,7 +6,9 @@ import com.mycompany.ecommerce.models.Subcategoria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class SubcategoriaService {
@@ -46,24 +48,18 @@ public class SubcategoriaService {
 
     public void atualizarSubcategoria(Subcategoria subcategoria, Long id) throws Exception {
 
-        Subcategoria subcategoriaAtualizada = subcategoriaDAO.buscarPorId(id);
-
-        if (subcategoriaAtualizada == null) {
-            throw new NotFoundException("Subcategoria não encontrada com id: "+ id);
-        }
-
+        Subcategoria subcategoriaAtualizada = this.buscarSubcategoriaPorId(id);
         subcategoriaDAO.atualizar(subcategoria, id);
     }
 
     public void excluirSubcategoria(Long id) throws Exception {
 
-        Subcategoria subcategoria = subcategoriaDAO.buscarPorId(id);
-
-        if (subcategoria == null) {
-            throw new NotFoundException("Subcategoria não encontrada com id: "+ id);
-        }
-
+        Subcategoria subcategoria = this.buscarSubcategoriaPorId(id);
         subcategoriaDAO.delete(subcategoria.getId());
+    }
+
+    public List<Map<String, Object>> buscarSubcategoriasComMaisVendas(Date dataI, Date dataF) throws Exception {
+        return subcategoriaDAO.buscarSubcategoriasComMaisVendas(dataI, dataF);
     }
 
 }

@@ -2,6 +2,7 @@ package com.mycompany.ecommerce.DAOs.DAOsImpl;
 
 import com.mycompany.ecommerce.DAOs.DAOS.SubcategoriaDAO;
 import com.mycompany.ecommerce.models.Categoria;
+import com.mycompany.ecommerce.models.Produto;
 import com.mycompany.ecommerce.models.Subcategoria;
 import com.mycompany.ecommerce.models.SubcategoriaProduto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,9 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class SubcategoriaDAOImpl implements SubcategoriaDAO {
@@ -21,6 +24,8 @@ public class SubcategoriaDAOImpl implements SubcategoriaDAO {
     public SubcategoriaDAOImpl(DataSource dataSource) {
         this.dataSource = dataSource;
     }
+
+
 
     @Override
     public Subcategoria buscarPorNome(String nome) throws Exception {
@@ -45,6 +50,68 @@ public class SubcategoriaDAOImpl implements SubcategoriaDAO {
         return subcategoria;
     }
 
+    @Override
+    public List<Subcategoria> buscarSubcategoriasPorCategoria(Long categoriaId) throws Exception {
+        String sql = "SELECT * FROM subcategoria where categoria_principal_id = ?";
+        List<Subcategoria> subcategorias = new ArrayList<>();
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setLong(1, categoriaId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Subcategoria subcategoria = mapRowToSubcategoria(rs);
+                    subcategorias.add(subcategoria);
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new Exception("Erro ao buscar subcategoria: " + e.getMessage(), e);
+        }
+
+        return subcategorias;
+    }
+
+
+    @Override
+    public List<Map<String, Object>> buscarSubcategoriasComMaisVendas(Date dataI, Date dataF) throws Exception {
+        String sql = "SELECT s.id AS subcategoria_id, s.nome AS subcategoria_nome, SUM(ci.quantidade_item) AS total_vendas " +
+                "FROM subcategoria s " +
+                "JOIN subcategoria_produto sp ON s.id = sp.subcategoria_id " +
+                "JOIN produto p ON sp.produto_id = p.id " +
+                "JOIN compra_item ci ON p.id = ci.produto_id " +
+                "JOIN compra c ON ci.compra_nota_fiscal = c.nota_fiscal " +
+                "WHERE c.data_compra BETWEEN ? AND ? " +
+                "GROUP BY s.id, s.nome " +
+                "ORDER BY total_vendas DESC";
+
+        List<Map<String, Object>> subcategorias = new ArrayList<>();
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setDate(1, dataI);
+            stmt.setDate(2, dataF);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Map<String, Object> subcategoriaMap = new HashMap<>();
+                    subcategoriaMap.put("subcategoria_id", rs.getLong("subcategoria_id"));
+                    subcategoriaMap.put("subcategoria_nome", rs.getString("subcategoria_nome"));
+                    subcategoriaMap.put("total_vendas", rs.getLong("total_vendas"));
+
+                    subcategorias.add(subcategoriaMap);
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new Exception("Erro ao buscar subcategorias com mais vendas: " + e.getMessage(), e);
+        }
+
+        return subcategorias;
+    }
 
     // crud
 

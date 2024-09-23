@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,8 +73,12 @@ public class UsuarioDAOImpl implements UsuarioDAO {
         String nome = (String) params[1];
         String role = (String) params[2];
         String password = (String) params[3];
+        LocalDate dataNasc = (LocalDate) params[4];
 
-        String sql = "INSERT INTO usuario (doc, nome, user_role, password) VALUES (?, ?, ?, ?)";
+        java.sql.Date dataSql = java.sql.Date.valueOf(dataNasc);
+
+
+        String sql = "INSERT INTO usuario (doc, nome, user_role, password, data_nasc) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -82,6 +87,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
             stmt.setString(2, nome);
             stmt.setString(3, role);
             stmt.setString(4, password);
+            stmt.setDate(5, dataSql);
 
             int affectedRows = stmt.executeUpdate();
 

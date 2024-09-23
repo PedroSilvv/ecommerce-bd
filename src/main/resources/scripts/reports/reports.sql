@@ -2,7 +2,7 @@
 ----------------------------------------------------------
 SELECT Produto.nome AS produto, Categoria.nome AS categoria
 FROM Produto
-         INNER JOIN Categoria ON Produto.categoria_id = Categoria.id;
+ INNER JOIN Categoria ON Produto.categoria_id = Categoria.id;
 
 SELECT p.nome, p.preco, p.quantidade, c.nome, p.descricao
 FROM produto p
@@ -24,8 +24,6 @@ WHERE p.nome ILIKE '%vodka%'
 OR p.descricao ILIKE '%vodka%'
 OR p.marca ILIKE '%vodka%'
 OR c.nome ILIKE '%vodka%';
-
-
 
 ------------------------------------------
 SELECT produto.id, produto.nome AS produto, produto.quantidade_vendas
@@ -58,6 +56,8 @@ WITH compras_ordenadas AS (
          FROM compras_ordenadas
          WHERE compra_anterior IS NOT NULL
      )
+
+
 SELECT CASE
            WHEN EXTRACT(YEAR FROM AGE(data_nasc)) BETWEEN 18 AND 25 THEN '18-25'
            WHEN EXTRACT(YEAR FROM AGE(data_nasc)) BETWEEN 26 AND 35 THEN '26-35'

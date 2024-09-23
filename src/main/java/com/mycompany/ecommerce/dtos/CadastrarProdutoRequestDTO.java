@@ -9,7 +9,7 @@ import java.util.Set;
 public class CadastrarProdutoRequestDTO {
 
     @JsonProperty
-    private Categoria categoria;
+    private Long categoria;
 
     @JsonProperty
     private String nome;
@@ -26,11 +26,11 @@ public class CadastrarProdutoRequestDTO {
     @JsonProperty
     private Set<String> subcategorias;
 
-    public Categoria getCategoria() {
+    public Long getCategoria() {
         return categoria;
     }
 
-    public void setCategoria(Categoria categoria) {
+    public void setCategoria(Long categoria) {
         this.categoria = categoria;
     }
 

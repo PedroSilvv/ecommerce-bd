@@ -1,11 +1,13 @@
 package com.mycompany.ecommerce.DAOs.custom;
 
+import com.mycompany.ecommerce.DAOs.DAOS.SubcategoriaDAO;
 import com.mycompany.ecommerce.DAOs.DAOsImpl.ProdutoDAOImpl;
 import com.mycompany.ecommerce.DAOs.DAOsImpl.SubcategoriaDAOImpl;
 import com.mycompany.ecommerce.DAOs.DAOsImpl.SubcategoriaProdutoDAOImpl;
 import com.mycompany.ecommerce.dtos.FiltrarProdutoResponseDTO;
 import com.mycompany.ecommerce.models.Produto;
 import com.mycompany.ecommerce.models.SubcategoriaProduto;
+import com.mycompany.ecommerce.services.SubcategoriaService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
@@ -56,6 +58,9 @@ public class CustomProdutoDAO {
     }
 
     public List<FiltrarProdutoResponseDTO> filtrarProdutos(String nome, String categoria, BigDecimal precoMinimo, BigDecimal precoMaximo, String descricao) throws Exception {
+
+        System.out.println("CustomProdutoDAO.filtrarProdutos");
+
         StringBuilder queryBuilder = new StringBuilder("SELECT p.nome, p.preco, p.quantidade, c.nome, p.descricao, p.id " +
                 " FROM produto p JOIN categoria c ON p.categoria_id = c.id " +
                 "WHERE 1=1 ");
@@ -104,9 +109,9 @@ public class CustomProdutoDAO {
             Integer quantidadeProduto = (Integer) o[2];
             String categoriaProduto = (String) o[3];
             String descricaoProduto = (String) o[4];
-            Long idProduto = (Long) o[5];
+            Integer idProduto = (Integer) o[5];
 
-            Produto produto = produtoDAO.buscarPorId(idProduto);
+            Produto produto = produtoDAO.buscarPorId(idProduto.longValue());
             List<SubcategoriaProduto> subcategorias = subcategoriaProdutoDAO.buscarPorProduto(produto.getId());
 
             List<String> subcategoriasNome = new ArrayList<>();
@@ -137,28 +142,41 @@ public class CustomProdutoDAO {
             query.setParameter("termo", "%" + termo + "%");
         }
 
+        System.out.println("debug1");
         List<Object[]> resultadoLista = query.getResultList();
+        System.out.println("resultadoLista");
         List<FiltrarProdutoResponseDTO> dtos = new ArrayList<>();
+        System.out.println("dtos");
+
 
         for (Object[] o : resultadoLista) {
+            System.out.println("entrou for");
             String nomeProduto = (String) o[0];
             BigDecimal precoProduto = (BigDecimal) o[1];
             Integer quantidadeProduto = (Integer) o[2];
             String categoriaProduto = (String) o[3];
             String descricaoProduto = (String) o[4];
-            Long idProduto = (Long) o[5];
+            Integer idProduto = (Integer) o[5];
 
-            Produto produto = produtoDAO.buscarPorId(idProduto);
+            System.out.println("debug id produto1");
+
+            Produto produto = produtoDAO.buscarPorId(idProduto.longValue());
+            System.out.println("debug id 2");
+
             List<SubcategoriaProduto> subcategorias = subcategoriaProdutoDAO.buscarPorProduto(produto.getId());
+            System.out.println("debug subcategrorias");
 
             List<String> subcategoriasNome = new ArrayList<>();
             for (SubcategoriaProduto s: subcategorias) {
                 String sNome = subcategoriaDAO.buscarPorId(s.getSubcategoriaId()).getNome();
                 subcategoriasNome.add(sNome);
+                System.out.println("debug for subcategorias");
+
             }
 
             dtos.add(new FiltrarProdutoResponseDTO(nomeProduto, precoProduto, quantidadeProduto, categoriaProduto, descricaoProduto, subcategoriasNome));
         }
+        System.out.println("debug fora for principal");
 
         return dtos;
 

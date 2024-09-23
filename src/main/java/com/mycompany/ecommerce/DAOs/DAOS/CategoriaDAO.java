@@ -5,5 +5,4 @@ import com.mycompany.ecommerce.models.Categoria;
 
 
 public interface CategoriaDAO extends GenericDAO<Categoria> {
-
 }

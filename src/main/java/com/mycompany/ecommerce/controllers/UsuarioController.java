@@ -53,11 +53,13 @@ public class UsuarioController {
             String senhaCript = passwordEncoder.encode(usuario.getPassword());
 
             Usuario.Role role = isAdmin ? Usuario.Role.ADMIN : Usuario.Role.DEFAULT;
+
             usuarioService.inserirUsuario(
                     usuario.getDoc(),
                     usuario.getNome(),
                     role,
-                    senhaCript
+                    senhaCript,
+                    usuario.getDataNasc()
             );
 
             return ResponseEntity.ok("Criado com sucesso");

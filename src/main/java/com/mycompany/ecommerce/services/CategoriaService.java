@@ -3,7 +3,6 @@ package com.mycompany.ecommerce.services;
 import com.mycompany.ecommerce.DAOs.DAOsImpl.CategoriaDAOImpl;
 import com.mycompany.ecommerce.exceptions.NotFoundException;
 import com.mycompany.ecommerce.models.Categoria;
-import com.mycompany.ecommerce.models.Subcategoria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +15,7 @@ public class CategoriaService {
     CategoriaDAOImpl categoriaDAO;
 
 
-    public Categoria buscarSubcategoriaPorId(Long id) throws Exception {
+    public Categoria buscarCategoriaPorId(Long id) throws Exception {
 
         Categoria categoria = categoriaDAO.buscarPorId(id);
 
@@ -26,33 +25,23 @@ public class CategoriaService {
         return categoria;
     }
 
-    public List<Categoria> buscarTodasSubcategorias() throws Exception {
+    public List<Categoria> buscarTodasCategorias() throws Exception {
         return categoriaDAO.buscarTodos();
     }
 
-    public void inserirSubcategoria(Categoria categoria) throws Exception {
+    public void inserirCategoria(Categoria categoria) throws Exception {
         categoriaDAO.inserir(categoria);
     }
 
-    public void atualizarSubcategoria(Categoria categoria ,Long id) throws Exception {
+    public void atualizarCategoria(Categoria categoria , Long id) throws Exception {
 
-        Categoria categoriaAtualizada = categoriaDAO.buscarPorId(id);
-
-        if (categoriaAtualizada == null) {
-            throw new NotFoundException("categoria não encontrada com id: "+ id);
-        }
-
+        Categoria categoriaAtualizada = this.buscarCategoriaPorId(id);
         categoriaDAO.atualizar(categoria, id);
     }
 
-    public void excluirSubcategoria(Long id) throws Exception {
+    public void excluirCategoria(Long id) throws Exception {
 
-        Categoria categoria = categoriaDAO.buscarPorId(id);
-
-        if (categoria == null) {
-            throw new NotFoundException("categoria não encontrada com id: "+ id);
-        }
-
+        Categoria categoria = this.buscarCategoriaPorId(id);
         categoriaDAO.delete(categoria.getId());
     }
 

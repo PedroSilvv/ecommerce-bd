@@ -222,11 +222,12 @@ public class ProdutoDAOImpl implements ProdutoDAO {
     }
 
 
+
     // Relatorios
 
     @Override
     public List<Map<String, Object>> findMostSelled() throws Exception {
-        String sql = "SELECT id, nome, quantidade_vendas FROM produto WHERE quantidade_vendas > 0 ORDER BY quantidade_vendas DESC";
+        String sql = "SELECT id, nome, quantidade_vendas FROM produto WHERE quantidade_vendas > 0 ORDER BY quantidade_vendas DESC LIMIT 20";
         List<Map<String, Object>> result = new ArrayList<>();
 
         try (Connection conn = dataSource.getConnection();
@@ -256,7 +257,8 @@ public class ProdutoDAOImpl implements ProdutoDAO {
                 "JOIN compra_item ci ON p.id = ci.produto_id " +
                 "JOIN compra c ON ci.compra_nota_fiscal = c.nota_fiscal " +
                 "WHERE c.data_compra BETWEEN ? AND ? " +
-                "GROUP BY p.id, p.nome";
+                "GROUP BY p.id, p.nome " +
+                "ORDER BY total_receita DESC LIMIT 20";
         List<Map<String, Object>> result = new ArrayList<>();
 
         try (Connection conn = dataSource.getConnection();
