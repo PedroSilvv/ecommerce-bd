@@ -41,8 +41,7 @@ public class UsuarioController {
     }
 
 
-
-    @PostMapping("/criar-usuario")
+    @PostMapping("/cadastrar-usuario")
     public ResponseEntity<?> criarUsuario(@RequestBody CriarUsuarioDTO usuario){
 
         try{

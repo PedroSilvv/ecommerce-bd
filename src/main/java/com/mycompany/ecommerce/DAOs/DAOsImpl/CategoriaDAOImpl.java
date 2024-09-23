@@ -71,13 +71,12 @@ public class CategoriaDAOImpl implements CategoriaDAO {
         Categoria categoria = (Categoria) params[0];
 
         String sql =
-                "INSERT INTO produto (id, nome) VALUES (?, ?)";
+                "INSERT INTO categoria (nome) VALUES (?)";
 
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            stmt.setLong(1, categoria.getId());
-            stmt.setString(2, categoria.getNome());
+            stmt.setString(1, categoria.getNome());
 
 
             int affectedRows = stmt.executeUpdate();

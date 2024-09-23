@@ -99,7 +99,7 @@ INSERT INTO subcategoria (nome, categoria_principal_id) VALUES ('APERITIVO', 3);
 
 SELECT Produto.nome AS produto, Categoria.nome AS categoria
 FROM Produto
-         INNER JOIN Categoria ON Produto.categoria_id = Categoria.id;
+INNER JOIN Categoria ON Produto.categoria_id = Categoria.id;
 
 SELECT p.nome, p.preco, p.quantidade, c.nome, p.descricao
 FROM produto p

@@ -1,11 +1,11 @@
 package com.mycompany.ecommerce.controllers;
 
-import com.mycompany.ecommerce.dtos.CompraResponseDTO;
-import com.mycompany.ecommerce.dtos.EfetuarCompraRequestDTO;
-import com.mycompany.ecommerce.dtos.ProdutoRequestDTO;
 import com.mycompany.ecommerce.DAOs.DAOsImpl.CompraDAOImpl;
 import com.mycompany.ecommerce.DAOs.DAOsImpl.CompraProdutoDAOImpl;
+import com.mycompany.ecommerce.dtos.CompraResponseDTO;
+import com.mycompany.ecommerce.dtos.EfetuarCompraRequestDTO;
 import com.mycompany.ecommerce.DAOs.DAOsImpl.ProdutoDAOImpl;
+import com.mycompany.ecommerce.dtos.ProdutoRequestDTO;
 import com.mycompany.ecommerce.exceptions.NotFoundException;
 import com.mycompany.ecommerce.models.Compra;
 import com.mycompany.ecommerce.models.CompraProduto;
@@ -13,13 +13,11 @@ import com.mycompany.ecommerce.models.Produto;
 import com.mycompany.ecommerce.services.CompraService;
 import com.mycompany.ecommerce.services.ProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.security.spec.ECField;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -35,16 +33,17 @@ public class CompraController {
     ProdutoService produtoService;
 
     @Autowired
-    private CompraService compraService;
+    CompraService compraService;
 
     @Autowired
-    private CompraDAOImpl compraDAO;
+    CompraDAOImpl compraDAO;
 
     @Autowired
     ProdutoDAOImpl produtoDAO;
 
     @Autowired
-    private CompraProdutoDAOImpl compraProdutoDAO;
+    CompraProdutoDAOImpl compraProdutoDAO;
+
 
     @PostMapping("/compra/efetuar-compra")
     public ResponseEntity<?> efetuarComprar(@RequestBody EfetuarCompraRequestDTO requestDTO){
@@ -53,6 +52,7 @@ public class CompraController {
         try{
             LocalDateTime localTime = LocalDateTime.now();
             Date localDate = Date.from(localTime.atZone(ZoneId.systemDefault()).toInstant());
+            java.sql.Date dataCompra = java.sql.Date.valueOf(localTime.toLocalDate());
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
             String dataFormatada = localTime.format(formatter);
@@ -66,7 +66,7 @@ public class CompraController {
             novaCompra.setPrecoTotal(BigDecimal.ZERO);
             novaCompra.setDataCompra(localDate);
             novaCompra.setNotaFiscal(notaFiscalFinal);
-            compraDAO.inserir(notaFiscalFinal, novaCompra.getUsuarioDoc(), novaCompra.getStatus().toString(), novaCompra.getPrecoTotal(), novaCompra.getDataCompra());
+            compraDAO.inserir(notaFiscalFinal, novaCompra.getUsuarioDoc(), novaCompra.getStatus().toString(), novaCompra.getPrecoTotal(), dataCompra);
 
             Double totalPrecoCompra = 0.0;
 
@@ -128,7 +128,7 @@ public class CompraController {
         try{
 
             compraService.confirmarCompra(nota);
-            Compra compra = compraDAO.buscarPorId(nota);
+            Compra compra = compraService.buscarCompraPorId(nota);
 
             return ResponseEntity.ok().body(compra);
         }
@@ -138,5 +138,21 @@ public class CompraController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+//    @PostMapping("/compra/efetuar-compra")
+//    public ResponseEntity<?> efetuarComprar(@RequestBody EfetuarCompraRequestDTO requestDTO) throws Exception {
+//
+//        try{
+//            Compra novaCompra = compraService.efetuarCompra(requestDTO);
+//            return ResponseEntity.ok().body(novaCompra);
+//        }
+//        catch (NotFoundException e){
+//            return ResponseEntity.notFound().build();
+//        }
+//        catch (Exception e){
+//            return ResponseEntity.badRequest().body(e.getMessage());
+//        }
+//
+//    }
 
 }

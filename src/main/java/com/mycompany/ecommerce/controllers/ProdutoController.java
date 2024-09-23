@@ -2,7 +2,7 @@ package com.mycompany.ecommerce.controllers;
 
 import com.mycompany.ecommerce.dtos.CadastrarProdutoRequestDTO;
 import com.mycompany.ecommerce.dtos.FiltrarProdutoResponseDTO;
-import com.mycompany.ecommerce.DAOs.DAOsImpl.ProdutoDAOImpl;
+import com.mycompany.ecommerce.exceptions.NotFoundException;
 import com.mycompany.ecommerce.models.Produto;
 import com.mycompany.ecommerce.DAOs.custom.CustomProdutoDAO;
 import com.mycompany.ecommerce.services.ProdutoService;
@@ -28,9 +28,6 @@ public class ProdutoController {
     @Autowired
     CustomProdutoDAO customProdutoRepository;
 
-    @Autowired
-    ProdutoDAOImpl produtoDAO;
-
 
     @PostMapping("/auth/cadastrar-produto")
     public ResponseEntity<?> cadastrarProduto(@RequestBody CadastrarProdutoRequestDTO produto){
@@ -52,13 +49,16 @@ public class ProdutoController {
 
 
         try{
-            Produto produto = produtoDAO.buscarPorId(id);
+            Produto produto = produtoService.buscarProdutoPorId(id);
 
             produtoService.atualizarProduto(
                     requestDTO, id
             );
 
             return ResponseEntity.ok().body(produto);
+        }
+        catch (NotFoundException e){
+            return ResponseEntity.notFound().build();
         }
         catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -68,19 +68,28 @@ public class ProdutoController {
     @GetMapping("/produto/{id}")
     public ResponseEntity<?> buscarProduto(@PathVariable(value = "id") Long id){
         try{
-            Produto produto = produtoDAO.buscarPorId(id);
+            Produto produto = produtoService.buscarProdutoPorId(id);
             return ResponseEntity.ok().body(produto);
-        }catch (Exception e) {
+        }
+        catch (NotFoundException e){
+            return ResponseEntity.notFound().build();
+        }
+        catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @GetMapping("/produtos/categoria/{id}")
     public ResponseEntity<?> buscarProdutoPorCategoria(@PathVariable(value = "id") Long id){
+
         try{
-            List<Produto> produtos = produtoService.findProdutoByCategoria(id);
+            List<Produto> produtos = produtoService.buscarProdutoPorCategoria(id);
 
             return ResponseEntity.ok(produtos);
+        }
+
+        catch (NotFoundException e){
+            return ResponseEntity.notFound().build();
         }
         catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -103,12 +112,12 @@ public class ProdutoController {
     @GetMapping("/buscar-produto-por-termo/{termo}")
     public List<FiltrarProdutoResponseDTO> buscarProdutoPorTermo(@PathVariable(value = "termo") String termo) throws Exception {
 
-        return customProdutoRepository.buscarPorTermo(termo);
+        return produtoService.buscarProdutoPorTermo(termo);
     }
 
     @GetMapping("/filtrar-mais-vendidos")
     public ResponseEntity<?> filtrarMaisVendidos() throws Exception {
-        List<Map<String, Object>> produtos = produtoDAO.findMostSelled();
+        List<Map<String, Object>> produtos = produtoService.maisVendidos();
 
         return ResponseEntity.ok().body(produtos);
     }
@@ -123,13 +132,13 @@ public class ProdutoController {
         LocalDate localDateF = LocalDate.parse(dataF);
         Date dataConvertidaF = Date.from(localDateF.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
-        List<Map<String, Object>> produtos = produtoDAO.findMostSelledByDate(dataConvertidaI, dataConvertidaF);
+        List<Map<String, Object>> produtos = produtoService.maisVendidosPorData(dataConvertidaI, dataConvertidaF);
         return ResponseEntity.ok().body(produtos);
     }
 
     @GetMapping("/produtos-mais-avaliados")
     public ResponseEntity<?> produtosMaisAvaliados() throws Exception {
-        List<Map<String, Object>> produtos = produtoDAO.findMostPopulars();
+        List<Map<String, Object>> produtos = produtoService.maisPopulares();
         return ResponseEntity.ok().body(produtos);
 
     }

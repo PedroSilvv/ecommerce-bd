@@ -1,5 +1,7 @@
 package com.mycompany.ecommerce.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 
 public class Subcategoria implements Serializable {

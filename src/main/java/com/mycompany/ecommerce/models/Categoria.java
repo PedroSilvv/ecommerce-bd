@@ -1,11 +1,14 @@
 package com.mycompany.ecommerce.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.Serializable;
 
 public class Categoria implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @JsonIgnore
     private Long id;
     private String nome;
 
