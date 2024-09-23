@@ -11,13 +11,15 @@ e entre elas estão:**
 
 4- Compra de produtos ( Carrinho de compras ) 
 
-5- Relatorio de vendas e clientes
+5- Sistema de avalição de produtos
+
+6- Relatorio de vendas e clientes
 
 **Alguns dos relatorios a serem desenvolvidos são:**
 
 1- Produtos mais vendidos entre um range de datas e a receita gerada por cada um.
 
-2- Categorias mais vendidas entra um range de datas
+2- Produtos por ordem de avaliação
 
 3- Subcategorias mais vendidas  entre um range de datas
 
