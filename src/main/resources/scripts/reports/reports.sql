@@ -2,7 +2,7 @@
 ----------------------------------------------------------
 SELECT Produto.nome AS produto, Categoria.nome AS categoria
 FROM Produto
- INNER JOIN Categoria ON Produto.categoria_id = Categoria.id;
+INNER JOIN Categoria ON Produto.categoria_id = Categoria.id;
 
 SELECT p.nome, p.preco, p.quantidade, c.nome, p.descricao
 FROM produto p
@@ -86,3 +86,29 @@ WHERE exists ( SELECT 1 FROM avaliacao a2 WHERE a2.produto_id = p.id)
 order by media asc;
 
 SELECT id, nome, quantidade_vendas FROM produto WHERE quantidade_vendas > 0 ORDER BY quantidade_vendas desc
+
+
+_________________________________________________________________________
+
+
+
+
+SELECT
+    u.nome AS cliente,
+    u.doc AS documento_cliente,
+    COUNT(DISTINCT c.nota_fiscal) AS total_compras,
+    COUNT(ci.id) AS total_produtos_comprados,
+    SUM(ci.preco_total_item) AS gasto_total,
+    SUM(ci.preco_total_item) / COUNT(DISTINCT c.nota_fiscal) AS gasto_medio_por_compra,
+    COUNT(ci.id) / COUNT(DISTINCT c.nota_fiscal) AS produtos_por_compra
+FROM
+    usuario u
+        JOIN
+    compra c ON u.doc = c.usuario_doc
+        JOIN
+    compra_item ci ON c.nota_fiscal = ci.compra_nota_fiscal
+GROUP BY
+    u.nome, u.doc
+ORDER BY
+    gasto_total DESC;
+

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class UsuarioService {
@@ -35,6 +36,12 @@ public class UsuarioService {
     public Usuario findUserByDoc(String doc){
         return usuarioDAO.buscarPorId(doc);
 
+    }
+
+    //relatorios
+
+    public List<Map<String, Object>> gastoMedioPorCliente() throws Exception {
+        return usuarioDAO.gastoMedioPorCliente();
     }
 
 }

@@ -6,10 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.math.RoundingMode;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class UsuarioDAOImpl implements UsuarioDAO {
@@ -109,6 +112,55 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 
     }
 
+    //Relatorios
+
+    @Override
+    public List<Map<String, Object>> gastoMedioPorCliente() throws Exception {
+        String sql = "SELECT \n" +
+                "    u.nome AS cliente,\n" +
+                "    u.doc AS documento_cliente,\n" +
+                "    COUNT(DISTINCT c.nota_fiscal) AS total_compras,\n" +
+                "    COUNT(ci.id) AS total_produtos_comprados,\n" +
+                "    SUM(ci.preco_total_item) AS gasto_total,\n" +
+                "    SUM(ci.preco_total_item) / COUNT(DISTINCT c.nota_fiscal) AS gasto_medio_por_compra,\n" +
+                "    COUNT(ci.id) / COUNT(DISTINCT c.nota_fiscal) AS produtos_por_compra\n" +
+                "FROM \n" +
+                "    usuario u\n" +
+                "JOIN \n" +
+                "    compra c ON u.doc = c.usuario_doc\n" +
+                "JOIN \n" +
+                "    compra_item ci ON c.nota_fiscal = ci.compra_nota_fiscal\n" +
+                "GROUP BY \n" +
+                "    u.nome, u.doc\n" +
+                "ORDER BY \n" +
+                "    gasto_total DESC;";
+
+        List<Map<String, Object>> result = new ArrayList<>();
+
+        try (Connection conn = dataSource.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                Map<String, Object> row = new HashMap<>();
+                row.put("nome", rs.getString("cliente"));
+                row.put("documento", rs.getString("documento_cliente"));
+                row.put("total_compras", rs.getInt("total_compras"));
+                row.put("total_produtos_comprados", rs.getInt("total_produtos_comprados"));
+                row.put("gasto_total", rs.getBigDecimal("gasto_total").setScale(2, RoundingMode.HALF_UP));
+                row.put("gasto_medio_por_compra", rs.getBigDecimal("gasto_medio_por_compra").setScale(2, RoundingMode.HALF_UP));
+                row.put("produtos_por_compra", rs.getInt("produtos_por_compra"));
+
+                result.add(row);
+            }
+
+        } catch (SQLException e) {
+            throw new Exception("Erro ao buscar clientes/compras: " + e.getMessage(), e);
+        }
+
+        return result;
+    }
+
 
     //map row
 
@@ -123,4 +175,5 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 
         return usuario;
     }
+
 }

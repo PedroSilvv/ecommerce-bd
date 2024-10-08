@@ -11,9 +11,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value="/api")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class UsuarioController {
 
     @Autowired
@@ -67,6 +69,12 @@ public class UsuarioController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @GetMapping("/principais-clientes")
+    public ResponseEntity<?> buscarUsuarios() throws Exception {
+        List<Map<String, Object>> lista = usuarioService.gastoMedioPorCliente();
+        return ResponseEntity.ok().body(lista);
     }
 
 }

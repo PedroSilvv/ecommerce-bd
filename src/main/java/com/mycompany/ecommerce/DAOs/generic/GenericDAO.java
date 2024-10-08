@@ -9,5 +9,4 @@ public interface GenericDAO<T>{
     public List<T> buscarTodos() throws Exception;
     public void atualizar(T t,  Object id) throws Exception;
     public void delete(Long id) throws Exception;
-
 }
